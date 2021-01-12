@@ -35,8 +35,11 @@ namespace HexMap.Runtime
         private Stack<HexCell> _cellStack = new Stack<HexCell>();
         private Stack<HexChunk> _chunkStack = new Stack<HexChunk>();
 
-        public void Initialize()
+        private bool _isEditor;
+
+        public void Initialize(bool isEditor)
         {
+            _isEditor = isEditor;
             garbageRoot.gameObject.SetActive(false);
 
             // chunks
@@ -47,6 +50,11 @@ namespace HexMap.Runtime
 
             // cells
             cells = new HexCell[gridRowCount * gridColumnCount];
+        }
+
+        public void SetEditorModel(bool editor)
+        {
+            gameObject.SetActive(editor);
         }
 
         public void Refresh(int xChunk, int zChunk)

@@ -1,8 +1,21 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using System.Collections;
 
 namespace HexMap.Runtime
 {
+    [System.Serializable]
+    public class UnityEventWithClick : UnityEvent<Vector3, bool, bool> { }
+
+    [System.Serializable]
+    public class UnityEventWithRaycastHit : UnityEvent<RaycastHit> { }
+
+    [System.Serializable]
+    public class UnityEventWithRaycastHit2D : UnityEvent<RaycastHit2D> { }
+
+    [System.Serializable]
+    public class UnityEventWithOver : UnityEvent<Vector3> { }
+
     [RequireComponent(typeof(Camera))]
     [AddComponentMenu("RTSCamera")]
     public class RTSCamera : MonoBehaviour
@@ -25,7 +38,7 @@ namespace HexMap.Runtime
 #endif
 
         #endregion
-
+        private Camera _Cam;
         private Transform m_Transform; //camera tranform
         public bool useFixedUpdate = false; //use FixedUpdate() or Update()
 
@@ -47,7 +60,7 @@ namespace HexMap.Runtime
 
         public float maxHeight = 10f; //maximal height
         public float minHeight = 15f; //minimnal height
-        public float heightDampening = 5f; 
+        public float heightDampening = 5f;
         public float keyboardZoomingSensitivity = 2f;
         public float scrollWheelZoomingSensitivity = 25f;
 
@@ -139,7 +152,7 @@ namespace HexMap.Runtime
                     return 1;
                 else if (zoomIn && !zoomOut)
                     return -1;
-                else 
+                else
                     return 0;
             }
         }
@@ -150,13 +163,13 @@ namespace HexMap.Runtime
             {
                 bool rotateRight = Input.GetKey(rotateRightKey);
                 bool rotateLeft = Input.GetKey(rotateLeftKey);
-                if(rotateLeft && rotateRight)
+                if (rotateLeft && rotateRight)
                     return 0;
-                else if(rotateLeft && !rotateRight)
+                else if (rotateLeft && !rotateRight)
                     return -1;
-                else if(!rotateLeft && rotateRight)
+                else if (!rotateLeft && rotateRight)
                     return 1;
-                else 
+                else
                     return 0;
             }
         }
@@ -167,6 +180,7 @@ namespace HexMap.Runtime
 
         private void Start()
         {
+            _Cam = GetComponent<Camera>();
             m_Transform = transform;
         }
 
@@ -199,6 +213,7 @@ namespace HexMap.Runtime
             HeightCalculation();
             Rotation();
             LimitPosition();
+            UpdateInputEvent();
         }
 
         /// <summary>
@@ -236,9 +251,9 @@ namespace HexMap.Runtime
                 desiredMove = m_Transform.InverseTransformDirection(desiredMove);
 
                 m_Transform.Translate(desiredMove, Space.Self);
-            }       
-        
-            if(usePanning && Input.GetKey(panningKey) && MouseAxis != Vector2.zero)
+            }
+
+            if (usePanning && Input.GetKey(panningKey) && MouseAxis != Vector2.zero)
             {
                 Vector3 desiredMove = new Vector3(-MouseAxis.x, 0, -MouseAxis.y);
 
@@ -257,7 +272,7 @@ namespace HexMap.Runtime
         private void HeightCalculation()
         {
             float distanceToGround = DistanceToGround();
-            if(useScrollwheelZooming)
+            if (useScrollwheelZooming)
                 zoomPos += ScrollWheel * Time.deltaTime * scrollWheelZoomingSensitivity;
             if (useKeyboardZooming)
                 zoomPos += ZoomDirection * Time.deltaTime * keyboardZoomingSensitivity;
@@ -265,12 +280,12 @@ namespace HexMap.Runtime
             zoomPos = Mathf.Clamp01(zoomPos);
 
             float targetHeight = Mathf.Lerp(minHeight, maxHeight, zoomPos);
-            float difference = 0; 
+            float difference = 0;
 
-            if(distanceToGround != targetHeight)
+            if (distanceToGround != targetHeight)
                 difference = targetHeight - distanceToGround;
 
-            m_Transform.position = Vector3.Lerp(m_Transform.position, 
+            m_Transform.position = Vector3.Lerp(m_Transform.position,
                 new Vector3(m_Transform.position.x, targetHeight + difference, m_Transform.position.z), Time.deltaTime * heightDampening);
         }
 
@@ -279,7 +294,7 @@ namespace HexMap.Runtime
         /// </summary>
         private void Rotation()
         {
-            if(useKeyboardRotation)
+            if (useKeyboardRotation)
                 transform.Rotate(Vector3.up, RotationDirection * Time.deltaTime * rotationSped, Space.World);
 
             if (useMouseRotation && Input.GetKey(mouseRotationKey))
@@ -302,7 +317,7 @@ namespace HexMap.Runtime
         {
             if (!limitMap)
                 return;
-                
+
             m_Transform.position = new Vector3(Mathf.Clamp(m_Transform.position.x, -limitX, limitX),
                 m_Transform.position.y,
                 Mathf.Clamp(m_Transform.position.z, -limitY, limitY));
@@ -337,6 +352,84 @@ namespace HexMap.Runtime
                 return (hit.point - m_Transform.position).magnitude;
 
             return 0f;
+        }
+        #endregion
+
+        #region Input Event
+
+        public UnityEventWithClick onClick;
+        public UnityEventWithRaycastHit onPick;
+        public UnityEventWithRaycastHit2D onPick2D;
+        public UnityEventWithOver onFreeOver;
+
+        public int touchCount
+        {
+            get
+            {
+                if (Input.touchCount > 0)
+                    return Input.touchCount;
+
+                if (Input.GetMouseButton(0) == true)
+                    return 1;
+                else return 0;
+            }
+        }
+
+        public float clickDurationThreshold = 0.7f;
+        public float doubleclickDurationThreshold = 0.5f;
+
+        private bool _isFingerDown;
+        private float _lastFingerDownTimeReal;
+
+        private void UpdateInputEvent()
+        {
+            if (touchCount > 0)
+            {
+                _isFingerDown = true;
+                _lastFingerDownTimeReal = Time.realtimeSinceStartup;
+            }
+            else if (touchCount <= 0)
+            {
+                if (_isFingerDown)
+                {
+                    _isFingerDown = false;
+
+                    float fingerDownUpDuration = Time.realtimeSinceStartup - _lastFingerDownTimeReal;
+                    bool isLongTap = fingerDownUpDuration > clickDurationThreshold;
+
+                    DoClick(Input.mousePosition, false, isLongTap);
+                }
+                else
+                {
+#if UNITY_EDITOR
+                    onFreeOver?.Invoke(Input.mousePosition);
+#endif
+                }
+            }
+        }
+
+        private void DoClick(Vector3 clickPosition, bool isDoubleClick, bool isLongTap)
+        {
+            Ray camRay = _Cam.ScreenPointToRay(clickPosition);
+            if (onPick != null)
+            {
+                RaycastHit hitInfo;
+                if (Physics.Raycast(camRay, out hitInfo) == true)
+                {
+                    onPick?.Invoke(hitInfo);
+                }
+            }
+
+            if (onPick != null)
+            {
+                RaycastHit2D hitInfo2D = Physics2D.Raycast(camRay.origin, camRay.direction);
+                if (hitInfo2D)
+                {
+                    onPick2D?.Invoke(hitInfo2D);
+                }
+            }
+
+            onClick?.Invoke(clickPosition, isDoubleClick, isLongTap);
         }
 
         #endregion

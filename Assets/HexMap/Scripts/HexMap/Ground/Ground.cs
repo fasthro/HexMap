@@ -17,11 +17,15 @@ namespace HexMap.Runtime
         [SerializeField] public Vector2 offset = Vector2.one;
         [SerializeField] public TextAsset tileFile;
         [SerializeField] public Material[] materials;
+        [SerializeField] public GroundCell groundCell;
+        [SerializeField] public Transform cellRootTransform;
 
         public int count { get; private set; }
         public MeshFilter meshFilter { get; private set; }
         public Mesh mesh { get; private set; }
         public MeshRenderer meshRenderer { get; private set; }
+
+        public GroundCell[] cells { get; private set; }
 
         private List<Vector3> _vertices;
         private int[] _triangles;
@@ -29,6 +33,8 @@ namespace HexMap.Runtime
 
         private int[] _tiles;
         private Dictionary<int, List<int>> _subMeshTriangleDict = new Dictionary<int, List<int>>();
+
+        private bool _isEditor;
 
         void Awake()
         {
@@ -40,14 +46,9 @@ namespace HexMap.Runtime
             transform.localPosition = new Vector3(offset.x, 0, offset.y);
         }
 
-        void Start()
+        public void Initialize(bool isEditor)
         {
-            Initialize();
-            DrawMesh();
-        }
-
-        public void Initialize()
-        {
+            _isEditor = isEditor;
             count = row * column;
 
             // tile
@@ -83,6 +84,54 @@ namespace HexMap.Runtime
             {
                 mat.SetTextureScale("_MaskTex", textureScale);
             }
+
+            if (isEditor)
+            {
+                InitializeEditor();
+            }
+
+            DrawMesh();
+        }
+
+        private void InitializeEditor()
+        {
+            cells = new GroundCell[count];
+            for (int index = 0, z = 0; z < column; z++)
+            {
+                for (int x = 0; x < row; x++, index++)
+                {
+                    CreateCell(x, z, index);
+                }
+            }
+        }
+
+        public void SetEditorModel(bool editor)
+        {
+            cellRootTransform.gameObject.SetActive(editor);
+        }
+
+        private void CreateCell(int x, int z, int index)
+        {
+            var half = size / 2;
+
+            Vector3 position;
+            position.x = x * size + half;
+            position.y = 0;
+            position.z = (z * size + half) * -1;
+
+            Vector3 scale = new Vector3(size, 1, size);
+
+            var cell = cells[index] = GameObject.Instantiate<GroundCell>(groundCell);
+            cell.index = index;
+            cell.x = x;
+            cell.z = z;
+            cell.position = position;
+            cell.materialIndex = _tiles[index];
+
+            cell.transform.SetParent(cellRootTransform);
+            cell.transform.localPosition = position;
+            cell.transform.localScale = scale;
+            cell.gameObject.name = "Ground_" + index;
         }
 
         public void DrawMesh()
@@ -131,12 +180,11 @@ namespace HexMap.Runtime
                 _subMeshTriangleDict[_tiles[i]].AddRange(GetTriangleArray(i));
             }
 
-            int subIndex = 0;
-            foreach (var item in _subMeshTriangleDict)
+            for (int i = 0; i < materials.Length; i++)
             {
-                var key = subIndex++;
-                mesh.SetIndices(item.Value.ToArray(), MeshTopology.Triangles, key);
+                mesh.SetIndices(_subMeshTriangleDict[i].ToArray(), MeshTopology.Triangles, i);
             }
+
             meshRenderer.materials = materials;
             mesh.RecalculateNormals();
         }

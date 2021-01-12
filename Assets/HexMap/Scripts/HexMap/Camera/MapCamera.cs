@@ -20,8 +20,43 @@ namespace HexMap.Runtime
             rts = GetComponent<RTSCamera>();
             cam = GetComponent<Camera>();
 
+            rts.onClick.AddListener(OnClick);
+            rts.onPick.AddListener(OnPick);
+            rts.onFreeOver.AddListener(OnOver);
+
             _raycast = new Plane(Vector3.up, Vector3.zero);
         }
+
+        public void Initialize(bool isEditor)
+        {
+
+        }
+
+        private void OnClick(Vector3 clickPosition, bool isDoubleClick, bool isLongTap)
+        {
+
+        }
+
+        private void OnPick(RaycastHit hitInfo)
+        {
+            var hexcell = hitInfo.transform.gameObject.GetComponent<HexCell>();
+            if (hexcell != null)
+            {
+                HexMap.instance.OnPickHexCell(hexcell);
+            }
+
+            var groundcell = hitInfo.transform.gameObject.GetComponent<GroundCell>();
+            if (groundcell != null)
+            {
+                HexMap.instance.OnPickGroundCell(groundcell);
+            }
+        }
+
+        private void OnOver(Vector3 overPosition)
+        {
+
+        }
+
 
         public void MoveToCell(int x, int z)
         {

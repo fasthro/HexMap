@@ -9,16 +9,48 @@ using UnityEngine;
 
 namespace HexMap.Runtime
 {
+    public enum EditorModel
+    {
+        Ground,
+        Hex,
+    }
+
     public class HexMap : MonoBehaviour
     {
+        public static HexMap instance { get; private set; }
+
         public Ground ground;
         public HexGrid hexGrid;
         public MapCamera mapCamera;
 
-        void Start()
+        public Transform pickHexEffect;
+        public int pickHexIndex { get; private set; }
+
+        public Transform pickGroundEffect;
+        public int pickGroundIndex { get; private set; }
+
+        public EditorModel editorModel { get; private set; }
+
+        void Awake()
         {
-            hexGrid.Initialize();
+            instance = this;
+            pickHexEffect.gameObject.SetActive(false);
+            pickGroundEffect.gameObject.SetActive(false);
+        }
+
+        public void Initialize(bool isEditor)
+        {
+            ground.Initialize(isEditor);
+            hexGrid.Initialize(isEditor);
+            mapCamera.Initialize(isEditor);
             mapCamera.MoveToCell(750, 750);
+        }
+
+        public void SetEditorModel(EditorModel model)
+        {
+            editorModel = model;
+            ground.SetEditorModel(model == EditorModel.Ground);
+            hexGrid.SetEditorModel(model == EditorModel.Hex);
         }
 
         void Update()
@@ -33,6 +65,20 @@ namespace HexMap.Runtime
             {
                 hexGrid.Refresh(chunkXZ.x, chunkXZ.y);
             }
+        }
+
+        public void OnPickHexCell(HexCell cell)
+        {
+            pickHexIndex = cell.index;
+            pickHexEffect.gameObject.SetActive(true);
+            pickHexEffect.localPosition = cell.position;
+        }
+
+        public void OnPickGroundCell(GroundCell cell)
+        {
+            pickGroundIndex = cell.index;
+            pickGroundEffect.gameObject.SetActive(true);
+            pickGroundEffect.localPosition = cell.position;
         }
 
         public static Vector3 CellPosition(int x, int z)

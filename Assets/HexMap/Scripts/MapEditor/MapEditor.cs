@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using HexMap.Runtime;
 
 namespace HexMap
 {
@@ -14,6 +15,8 @@ namespace HexMap
     {
         public string mapXmlPath;
         public string prefabXmlPath;
+
+        public Runtime.HexMap hexMap;
 
         public UnityEvent onCompleted;
 
@@ -34,6 +37,9 @@ namespace HexMap
             prefabParser = new PrefabParser(prefabXmlPath);
             prefabParser.LoadXml();
             prefabParser.LoadXml();
+
+            hexMap.Initialize(true);
+            hexMap.SetEditorModel(EditorModel.Hex);
         }
 
         void Update()

@@ -14,11 +14,12 @@ namespace HexMap
 
         private void OnEnable()
         {
-            tabs = new TabsBlock(new Dictionary<string, System.Action>() 
+            tabs = new TabsBlock(new Dictionary<string, System.Action>()
             {
                 {"Movement", MovementTab},
                 {"Rotation", RotationTab},
-                {"Height", HeightTab}
+                {"Height", HeightTab},
+                {"InputEvent", InputTab}
             });
             tabs.SetCurrentMethod(camera.lastTab);
         }
@@ -38,9 +39,9 @@ namespace HexMap
             using (new HorizontalBlock())
             {
                 GUILayout.Label("Use keyboard input: ", EditorStyles.boldLabel, GUILayout.Width(170f));
-                camera.useKeyboardInput = EditorGUILayout.Toggle( camera.useKeyboardInput);
+                camera.useKeyboardInput = EditorGUILayout.Toggle(camera.useKeyboardInput);
             }
-            if(camera.useKeyboardInput)
+            if (camera.useKeyboardInput)
             {
                 camera.horizontalAxis = EditorGUILayout.TextField("Horizontal axis name: ", camera.horizontalAxis);
                 camera.verticalAxis = EditorGUILayout.TextField("Vertical axis name: ", camera.verticalAxis);
@@ -50,10 +51,10 @@ namespace HexMap
             using (new HorizontalBlock())
             {
                 GUILayout.Label("Screen edge input: ", EditorStyles.boldLabel, GUILayout.Width(170f));
-                camera.useScreenEdgeInput = EditorGUILayout.Toggle( camera.useScreenEdgeInput);
+                camera.useScreenEdgeInput = EditorGUILayout.Toggle(camera.useScreenEdgeInput);
             }
 
-            if(camera.useScreenEdgeInput)
+            if (camera.useScreenEdgeInput)
             {
                 EditorGUILayout.FloatField("Screen edge border size: ", camera.screenEdgeBorder);
                 camera.screenEdgeMovementSpeed = EditorGUILayout.FloatField("Screen edge movement speed: ", camera.screenEdgeMovementSpeed);
@@ -64,7 +65,7 @@ namespace HexMap
                 GUILayout.Label("Panning with mouse: ", EditorStyles.boldLabel, GUILayout.Width(170f));
                 camera.usePanning = EditorGUILayout.Toggle(camera.usePanning);
             }
-            if(camera.usePanning)
+            if (camera.usePanning)
             {
                 camera.panningKey = (KeyCode)EditorGUILayout.EnumPopup("Panning when holding: ", camera.panningKey);
                 camera.panningSpeed = EditorGUILayout.FloatField("Panning speed: ", camera.panningSpeed);
@@ -94,7 +95,7 @@ namespace HexMap
                 GUILayout.Label("Keyboard input: ", EditorStyles.boldLabel, GUILayout.Width(170f));
                 camera.useKeyboardRotation = EditorGUILayout.Toggle(camera.useKeyboardRotation);
             }
-            if(camera.useKeyboardRotation)
+            if (camera.useKeyboardRotation)
             {
                 camera.rotateLeftKey = (KeyCode)EditorGUILayout.EnumPopup("Rotate left: ", camera.rotateLeftKey);
                 camera.rotateRightKey = (KeyCode)EditorGUILayout.EnumPopup("Rotate right: ", camera.rotateRightKey);
@@ -106,7 +107,7 @@ namespace HexMap
                 GUILayout.Label("Mouse input: ", EditorStyles.boldLabel, GUILayout.Width(170f));
                 camera.useMouseRotation = EditorGUILayout.Toggle(camera.useMouseRotation);
             }
-            if(camera.useMouseRotation)
+            if (camera.useMouseRotation)
             {
                 camera.mouseRotationKey = (KeyCode)EditorGUILayout.EnumPopup("Mouse rotation key: ", camera.mouseRotationKey);
                 camera.mouseRotationSpeed = EditorGUILayout.FloatField("Mouse rotation speed: ", camera.mouseRotationSpeed);
@@ -131,7 +132,7 @@ namespace HexMap
                 GUILayout.Label("Keyboard zooming: ", EditorStyles.boldLabel, GUILayout.Width(170f));
                 camera.useKeyboardZooming = EditorGUILayout.Toggle(camera.useKeyboardZooming);
             }
-            if(camera.useKeyboardZooming)
+            if (camera.useKeyboardZooming)
             {
                 camera.zoomInKey = (KeyCode)EditorGUILayout.EnumPopup("Zoom In: ", camera.zoomInKey);
                 camera.zoomOutKey = (KeyCode)EditorGUILayout.EnumPopup("Zoom Out: ", camera.zoomOutKey);
@@ -153,7 +154,27 @@ namespace HexMap
                     camera.maxHeight = EditorGUILayout.FloatField("Max height: ", camera.maxHeight);
                     camera.minHeight = EditorGUILayout.FloatField("Min height: ", camera.minHeight);
                 }
-            }  
+            }
+        }
+
+        private void InputTab()
+        {
+            using (new HorizontalBlock())
+            {
+                GUILayout.Label("OnClick Event", EditorStyles.boldLabel, GUILayout.Width(170f));
+            }
+            using (new HorizontalBlock())
+            {
+                GUILayout.Label("OnPick Event", EditorStyles.boldLabel, GUILayout.Width(170f));
+            }
+            using (new HorizontalBlock())
+            {
+                GUILayout.Label("OnPick2D Event", EditorStyles.boldLabel, GUILayout.Width(170f));
+            }
+            using (new HorizontalBlock())
+            {
+                GUILayout.Label("OnFreeOver Event", EditorStyles.boldLabel, GUILayout.Width(170f));
+            }
         }
     }
 }

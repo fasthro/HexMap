@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapXmlPath: Assets/HexMap/Data/map.xml
   prefabXmlPath: Assets/HexMap/Data/prefab.xml
+  hexMap: {fileID: 5785903191917041280}
   onCompleted:
     m_PersistentCalls:
       m_Calls: []
@@ -200,3 +201,15 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 8000475709515751271}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5785903191917041280 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4561247059340970471, guid: c121a1e9f28fa34489991b1dba255893,
+    type: 3}
+  m_PrefabInstance: {fileID: 8000475709515751271}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df7bced41490a3b4daa6cc88c01f5057, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
