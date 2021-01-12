@@ -17,9 +17,9 @@ namespace HexMap.Runtime
         [SerializeField] public int chunkRowSize;
         [SerializeField] public int chunkColumnSize;
 
-        [SerializeField] public HexChunk hexChunkPrefab;
-        [SerializeField] public GameObject hexPrefab;
-        [SerializeField] public Transform poolTrans;
+        [SerializeField] public HexChunk hexChunk;
+        [SerializeField] public HexCell hexCell;
+        [SerializeField] public Transform garbageRoot;
 
         public int chunkRowCount { get; private set; }
         public int chunkColumnCount { get; private set; }
@@ -37,7 +37,7 @@ namespace HexMap.Runtime
 
         public void Initialize()
         {
-            poolTrans.gameObject.SetActive(false);
+            garbageRoot.gameObject.SetActive(false);
 
             // chunks
             activeChunkX = activeChunkX = -1;
@@ -120,7 +120,7 @@ namespace HexMap.Runtime
             HexChunk chunk;
             if (_chunkStack.Count <= 0)
             {
-                chunk = chunks[index] = GameObject.Instantiate<HexChunk>(hexChunkPrefab);
+                chunk = chunks[index] = GameObject.Instantiate<HexChunk>(hexChunk);
             }
             else
             {
@@ -144,7 +144,7 @@ namespace HexMap.Runtime
             chunks[chunk.index] = null;
 
             chunk.isActive = false;
-            chunk.gameObject.transform.SetParent(poolTrans);
+            chunk.gameObject.transform.SetParent(garbageRoot);
 
             foreach (var cell in chunk.cells)
                 PoolRecycleHexCell(cell);
@@ -174,8 +174,7 @@ namespace HexMap.Runtime
             HexCell cell;
             if (_cellStack.Count <= 0)
             {
-                cell = cells[index] = new HexCell();
-                cell.hexObject = GameObject.Instantiate<GameObject>(hexPrefab);
+                cell = cells[index] = GameObject.Instantiate<HexCell>(hexCell);
             }
             else
             {
@@ -194,16 +193,15 @@ namespace HexMap.Runtime
             cell.z = z;
             cell.chunkIndex = chunkIndex;
 
-            cell.hexObject.transform.SetParent(chunks[chunkIndex].transform);
-            cell.hexObject.transform.localPosition = position;
+            cell.transform.SetParent(chunks[chunkIndex].transform);
+            cell.transform.localPosition = position;
             return cell;
         }
 
         private void PoolRecycleHexCell(HexCell cell)
         {
-            // Debug.Log($"<<<<<< recycle cell: {cell.index}");
             cells[cell.index] = null;
-            cell.hexObject.transform.SetParent(poolTrans);
+            cell.transform.SetParent(garbageRoot);
             _cellStack.Push(cell);
         }
 

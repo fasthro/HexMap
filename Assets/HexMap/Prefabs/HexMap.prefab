@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5928538963992717531}
   m_Layer: 0
-  m_Name: PoolRoot
+  m_Name: GarbageRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -325,11 +325,10 @@ MonoBehaviour:
   gridColumnCount: 1500
   chunkRowSize: 20
   chunkColumnSize: 20
-  hexChunkPrefab: {fileID: 2227157256377375143, guid: eb360f52bb3d03c4a8fcb98b00d59038,
+  hexChunk: {fileID: 2227157256377375143, guid: eb360f52bb3d03c4a8fcb98b00d59038,
     type: 3}
-  hexPrefab: {fileID: 7940987678303550465, guid: 4cc649d039bf64e4da2c94026819add6,
-    type: 3}
-  poolTrans: {fileID: 5928538963992717531}
+  hexCell: {fileID: 8578834590097393748, guid: 4cc649d039bf64e4da2c94026819add6, type: 3}
+  garbageRoot: {fileID: 5928538963992717531}
 --- !u!1 &6879696339218775106
 GameObject:
   m_ObjectHideFlags: 0

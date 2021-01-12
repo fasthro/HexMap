@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace HexMap.Runtime
 {
-    public class HexCell
+    public class HexCell : MonoBehaviour
     {
         public int index;
         public int chunkIndex;
@@ -17,7 +17,6 @@ namespace HexMap.Runtime
         public int z;
         public HexCoord coordinates;
         public Vector3 position;
-        public GameObject hexObject;
         public readonly HexCell[] neighbors = new HexCell[6];
 
         public HexCell GetNeighbor(HexDirection direction)
