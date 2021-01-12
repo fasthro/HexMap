@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Map>
+  <Prefabs>
+    <Prefab index="0" name="stronghold" terrain="0"/>
+    <Prefab index="1" name="town_fort_lowerright" terrain="0"/>
+    <Prefab index="2" name="town_fort_horizontal" terrain="0"/>
+    <Prefab index="3" name="terrain_03" terrain="3"/>
+  </Prefabs>
+</Map>
