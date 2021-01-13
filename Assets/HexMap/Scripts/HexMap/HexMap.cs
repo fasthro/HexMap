@@ -9,10 +9,10 @@ using UnityEngine;
 
 namespace HexMap.Runtime
 {
-    public enum EditorModel
+    public enum EditorModel : int
     {
+        Hex = 0,
         Ground,
-        Hex,
     }
 
     public class HexMap : MonoBehaviour
@@ -49,8 +49,22 @@ namespace HexMap.Runtime
         public void SetEditorModel(EditorModel model)
         {
             editorModel = model;
+
+            pickHexIndex = -1;
+            pickHexEffect.gameObject.SetActive(false);
+
+            pickGroundIndex = -1;
+            pickGroundEffect.gameObject.SetActive(false);
+
             ground.SetEditorModel(model == EditorModel.Ground);
             hexGrid.SetEditorModel(model == EditorModel.Hex);
+
+            var angles = mapCamera.transform.localEulerAngles;
+            angles.x = model == EditorModel.Hex ? 45 : 90;
+            mapCamera.transform.localEulerAngles = angles;
+
+            mapCamera.rts.minHeight = model == EditorModel.Hex ? 15 : 1000;
+            mapCamera.cam.fieldOfView = model == EditorModel.Hex ? 16 : 30;
         }
 
         void Update()

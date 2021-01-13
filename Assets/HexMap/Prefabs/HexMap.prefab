@@ -176,7 +176,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 3000
   field of view: 16
   orthographic: 0
   orthographic size: 5
@@ -244,7 +244,7 @@ MonoBehaviour:
   limitY: 2000
   targetFollow: {fileID: 0}
   targetOffset: {x: 0, y: 0, z: 0}
-  useScreenEdgeInput: 1
+  useScreenEdgeInput: 0
   screenEdgeBorder: 25
   useKeyboardInput: 1
   horizontalAxis: Horizontal
@@ -474,6 +474,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: GroundPickEffect
       objectReference: {fileID: 0}
+    - target: {fileID: 8558482324917107790, guid: 463c91d6c28416b458954464c995dd41,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4656316898465697373, guid: 463c91d6c28416b458954464c995dd41,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -548,6 +553,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: HexPickEffect
+      objectReference: {fileID: 0}
+    - target: {fileID: 7940987678303550465, guid: 03954aa1f69ea5c4ba149b3c7ab96fa7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2602535153808179216, guid: 03954aa1f69ea5c4ba149b3c7ab96fa7,
         type: 3}

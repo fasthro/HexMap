@@ -7,17 +7,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace HexMap
+namespace HexMap.Runtime
 {
     public class EditorUI : MonoBehaviour
     {
         public static EditorUI instance { get; private set; }
 
         public UILoading loading;
+        public UIMain main;
 
         void Awake()
         {
             instance = this;
+        }
+
+        public void Initialize(EditorModel model)
+        {
+            loading.Hide();
+            main.Initialize(model);
         }
     }
 }
