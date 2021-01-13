@@ -1,29 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using BitBenderGames;
 using UnityEngine;
 
 namespace HexMap.Runtime
 {
     public class MapCamera : MonoBehaviour
     {
+        public float keyboardMovementSpeed = 5f;
+
         readonly static Vector3 VP = new Vector3(0.5f, 0.5f, 0);
 
-        public RTSCamera rts { get; private set; }
         public Camera cam { get; private set; }
+        public TouchInputController touchInputController { get; private set; }
+        public MobileTouchCamera mobileTouchCamera { get; private set; }
+        public MobilePickingController mobilePickingController { get; private set; }
+
         public Vector3 centerPosition => GetCenterPosition();
+
+        public Vector2 keyboardInput
+        {
+            get { return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")); }
+        }
 
         private Plane _raycast;
         private float _raycastEnter;
 
         void Awake()
         {
-            rts = GetComponent<RTSCamera>();
             cam = GetComponent<Camera>();
+            mobileTouchCamera = cam.GetComponent<MobileTouchCamera>();
+            touchInputController = cam.GetComponent<TouchInputController>();
+            mobilePickingController = cam.GetComponent<MobilePickingController>();
 
-            rts.onClick.AddListener(OnClick);
-            rts.onPick.AddListener(OnPick);
-            rts.onFreeOver.AddListener(OnOver);
-
+            mobilePickingController.SnapUnitSize = 0.1f;
             _raycast = new Plane(Vector3.up, Vector3.zero);
         }
 
@@ -32,12 +42,31 @@ namespace HexMap.Runtime
 
         }
 
-        private void OnClick(Vector3 clickPosition, bool isDoubleClick, bool isLongTap)
+        void Update()
         {
-
+            UpdateKeyboardInput();
         }
 
-        private void OnPick(RaycastHit hitInfo)
+        #region touch camera
+
+        private void UpdateKeyboardInput()
+        {
+#if UNITY_EDITOR
+            if (keyboardInput.x != 0 || keyboardInput.y != 0)
+            {
+                Vector3 desiredMove = new Vector3(keyboardInput.x, 0, keyboardInput.y);
+
+                desiredMove *= keyboardMovementSpeed;
+                desiredMove *= Time.deltaTime;
+                desiredMove = Quaternion.Euler(new Vector3(0f, transform.eulerAngles.y, 0f)) * desiredMove;
+                desiredMove = transform.InverseTransformDirection(desiredMove);
+
+                transform.Translate(desiredMove, Space.Self);
+            }
+#endif
+        }
+
+        public void OnPickItem(RaycastHit hitInfo)
         {
             var hexcell = hitInfo.transform.gameObject.GetComponent<HexCell>();
             if (hexcell != null)
@@ -52,16 +81,37 @@ namespace HexMap.Runtime
             }
         }
 
-        private void OnOver(Vector3 overPosition)
+        public void OnPickableTransformSelected(Transform pickableTransform)
+        {
+        }
+
+        public void OnPickableTransformSelectedExtended(PickableSelectedData data)
+        {
+        }
+
+        public void OnPickableTransformDeselected(Transform pickableTransform)
+        {
+        }
+
+        public void OnPickableTransformMoveStarted(Transform pickableTransform)
+        {
+        }
+
+        public void OnPickableTransformMoved(Transform pickableTransform)
+        {
+        }
+
+        public void OnPickableTransformMoveEnded(Vector3 startPos, Transform pickableTransform)
         {
 
         }
-
+        #endregion
 
         public void MoveToCell(int x, int z)
         {
             var tp = HexMap.CellPosition(x, z);
-            transform.position = tp + rts.targetOffset;
+            tp.y = 0;
+            transform.position = tp + transform.position;
         }
 
         public Vector3 GetCenterPosition()

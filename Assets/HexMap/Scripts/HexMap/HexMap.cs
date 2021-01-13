@@ -63,7 +63,6 @@ namespace HexMap.Runtime
             angles.x = model == EditorModel.Hex ? 45 : 90;
             mapCamera.transform.localEulerAngles = angles;
 
-            mapCamera.rts.minHeight = model == EditorModel.Hex ? 15 : 1000;
             mapCamera.cam.fieldOfView = model == EditorModel.Hex ? 16 : 30;
         }
 

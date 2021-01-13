@@ -127,12 +127,15 @@ GameObject:
   - component: {fileID: 7864698050765809594}
   - component: {fileID: 346555691813813288}
   - component: {fileID: 3292283982149628649}
-  - component: {fileID: 336760919336575650}
   - component: {fileID: 4858223186308764488}
   - component: {fileID: 3104630447835990904}
+  - component: {fileID: 363927163181925525}
+  - component: {fileID: 3252718936656341825}
+  - component: {fileID: 6083867897511540942}
+  - component: {fileID: 9133331450018678163}
   - component: {fileID: 366732555481544690}
   m_Layer: 0
-  m_Name: RTSCamera
+  m_Name: MobileTouchCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -203,78 +206,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4678012084048638515}
   m_Enabled: 1
---- !u!114 &336760919336575650
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4678012084048638515}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 309273f9b600cfe4181f7e6115cc64a8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lastTab: 0
-  movementSettingsFoldout: 0
-  zoomingSettingsFoldout: 0
-  rotationSettingsFoldout: 0
-  heightSettingsFoldout: 0
-  mapLimitSettingsFoldout: 0
-  targetingSettingsFoldout: 0
-  inputSettingsFoldout: 0
-  useFixedUpdate: 0
-  keyboardMovementSpeed: 50
-  screenEdgeMovementSpeed: 3
-  followingSpeed: 5
-  rotationSped: 3
-  panningSpeed: 10
-  mouseRotationSpeed: 10
-  autoHeight: 1
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  maxHeight: 10
-  minHeight: 15
-  heightDampening: 5
-  keyboardZoomingSensitivity: 2
-  scrollWheelZoomingSensitivity: 25
-  limitMap: 1
-  limitX: 2000
-  limitY: 2000
-  targetFollow: {fileID: 0}
-  targetOffset: {x: 0, y: 0, z: 0}
-  useScreenEdgeInput: 0
-  screenEdgeBorder: 25
-  useKeyboardInput: 1
-  horizontalAxis: Horizontal
-  verticalAxis: Vertical
-  usePanning: 1
-  panningKey: 323
-  useKeyboardZooming: 1
-  zoomInKey: 101
-  zoomOutKey: 113
-  useScrollwheelZooming: 1
-  zoomingAxis: Mouse ScrollWheel
-  useKeyboardRotation: 1
-  rotateRightKey: 120
-  rotateLeftKey: 122
-  useMouseRotation: 1
-  mouseRotationKey: 324
-  onClick:
-    m_PersistentCalls:
-      m_Calls: []
-  onPick:
-    m_PersistentCalls:
-      m_Calls: []
-  onPick2D:
-    m_PersistentCalls:
-      m_Calls: []
-  onFreeOver:
-    m_PersistentCalls:
-      m_Calls: []
-  clickDurationThreshold: 0.7
-  doubleclickDurationThreshold: 0.5
 --- !u!114 &4858223186308764488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -314,6 +245,259 @@ MonoBehaviour:
   BlueSteepness: 1.09
   BlueGamma: 1
   e_ShowCurves: 1
+--- !u!114 &363927163181925525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4678012084048638515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0b68db338cb9e141b86129564ccfbf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  expertModeEnabled: 0
+  clickDurationThreshold: 0.7
+  doubleclickDurationThreshold: 0.5
+  tiltMoveDotTreshold: 0.7
+  tiltHorizontalDotThreshold: 0.5
+  dragStartDistanceThresholdRelative: 0.05
+  longTapStartsDrag: 1
+--- !u!114 &3252718936656341825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4678012084048638515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cec3e4ed2a559374298a103953472518, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraAxes: 1
+  perspectiveZoomMode: 1
+  camZoomMin: 5
+  camZoomMax: 40
+  camOverzoomMargin: 1
+  camOverdragMargin: 5
+  boundaryMin: {x: 0, y: -2650}
+  boundaryMax: {x: 2650, y: 0}
+  camFollowFactor: 15
+  autoScrollDampMode: 0
+  autoScrollDamp: 300
+  autoScrollDampCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.7
+      value: 0.9
+      inSlope: -0.5
+      outSlope: -0.5
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0.01
+      inSlope: -0.85
+      outSlope: -0.85
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  groundLevelOffset: 0
+  enableRotation: 0
+  enableTilt: 0
+  tiltAngleMin: 45
+  tiltAngleMax: 90
+  enableZoomTilt: 0
+  zoomTiltAngleMin: 45
+  zoomTiltAngleMax: 90
+  OnPickItem:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 366732555481544690}
+        m_MethodName: OnPickItem
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnPickItem2D:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPickItemDoubleClick:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPickItem2DDoubleClick:
+    m_PersistentCalls:
+      m_Calls: []
+  keyboardAndMousePlatforms: 07000000020000000000000001000000100000000d00000011000000
+  controlTweakablesEnabled: 0
+  keyboardControlsModifiers: 34010000330100003201000031010000
+  mouseRotationFactor: 0.01
+  mouseTiltFactor: 0.005
+  mouseZoomFactor: 1
+  keyboardRotationFactor: 1
+  keyboardTiltFactor: 1
+  keyboardZoomFactor: 1
+  keyboardRepeatFactor: 60
+  keyboardRepeatDelay: 0.5
+  expertModeEnabled: 0
+  zoomBackSpringFactor: 20
+  dragBackSpringFactor: 10
+  autoScrollVelocityMax: 60
+  dampFactorTimeMultiplier: 2
+  isPinchModeExclusive: 1
+  customZoomSensitivity: 1
+  terrainCollider: {fileID: 0}
+  cameraTransform: {fileID: 0}
+  is2dOverdragMarginEnabled: 0
+  camOverdragMargin2d: {x: 5, y: 5}
+  rotationDetectionDeltaThreshold: 0.25
+  rotationMinPinchDistance: 0.125
+  rotationLockThreshold: 2.5
+  pinchModeDetectionMoveTreshold: 0.025
+  pinchTiltModeThreshold: 0.0075
+  pinchTiltSpeed: 180
+--- !u!114 &6083867897511540942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4678012084048638515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d22d13ae4d0d2dd44b093e4fb04097a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  snapToGrid: 1
+  snapUnitSize: 1
+  snapOffset: {x: 0, y: 0}
+  snapAngle: 0
+  isMultiSelectionEnabled: 0
+  requireLongTapForMove: 0
+  OnPickableTransformSelected:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 366732555481544690}
+        m_MethodName: OnPickableTransformSelected
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnPickableTransformSelectedExtended:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 366732555481544690}
+        m_MethodName: OnPickableTransformSelectedExtended
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnPickableTransformDeselected:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 366732555481544690}
+        m_MethodName: OnPickableTransformDeselected
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnPickableTransformMoveStarted:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 366732555481544690}
+        m_MethodName: OnPickableTransformMoveStarted
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnPickableTransformMoved:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 366732555481544690}
+        m_MethodName: OnPickableTransformMoved
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnPickableTransformMoveEnded:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 366732555481544690}
+        m_MethodName: OnPickableTransformMoveEnded
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  expertModeEnabled: 0
+  deselectPreviousColliderOnClick: 1
+  repeatEventSelectedOnClick: 1
+  useLegacyTransformMovedEventOrder: 0
+--- !u!114 &9133331450018678163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4678012084048638515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e9257422a2d0404ba2d3447cd4fcfbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  touchInputController: {fileID: 363927163181925525}
 --- !u!114 &366732555481544690
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -326,6 +510,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b49e9b9c9b78c9468a768c53c36be9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  keyboardMovementSpeed: 10
 --- !u!1 &5642892880446449361
 GameObject:
   m_ObjectHideFlags: 0
