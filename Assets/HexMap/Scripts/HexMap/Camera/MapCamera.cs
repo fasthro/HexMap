@@ -9,14 +9,16 @@ namespace HexMap.Runtime
     {
         public float keyboardMovementSpeed = 5f;
 
-        readonly static Vector3 VP = new Vector3(0.5f, 0.5f, 0);
+        readonly static Vector3 VIEW_CENTER_POINT = new Vector3(0.5f, 0.5f, 0);
+        readonly static Vector3 VIEW_CENTER_TOP_POINT = new Vector3(0.5f, 1f, 0);
 
         public Camera cam { get; private set; }
         public TouchInputController touchInputController { get; private set; }
         public MobileTouchCamera mobileTouchCamera { get; private set; }
         public MobilePickingController mobilePickingController { get; private set; }
 
-        public Vector3 centerPosition => GetCenterPosition();
+        public Vector3 centerPosition => GetViewPosition(VIEW_CENTER_POINT);
+        public Vector3 centerTopPosition => GetViewPosition(VIEW_CENTER_TOP_POINT);
 
         public Vector2 keyboardInput
         {
@@ -109,14 +111,22 @@ namespace HexMap.Runtime
 
         public void MoveToCell(int x, int z)
         {
+            // 45°角
+            // var tp = HexMap.CellPosition(x, z);
+            // tp.y = transform.position.y;
+            // tp.z -= Mathf.Sqrt((_raycastEnter * _raycastEnter) / 2f);
+            // transform.position = tp;
+
+            // 任意角度
             var tp = HexMap.CellPosition(x, z);
-            tp.y = 0;
-            transform.position = tp + transform.position;
+            var dir = (transform.position - GetViewPosition(VIEW_CENTER_POINT)).normalized;
+            var offset = dir * _raycastEnter;
+            transform.position = tp + offset;
         }
 
-        public Vector3 GetCenterPosition()
+        private Vector3 GetViewPosition(Vector3 point)
         {
-            Ray worldRay = cam.ViewportPointToRay(VP);
+            Ray worldRay = cam.ViewportPointToRay(point);
             _raycast.Raycast(worldRay, out _raycastEnter);
             return worldRay.GetPoint(_raycastEnter);
         }

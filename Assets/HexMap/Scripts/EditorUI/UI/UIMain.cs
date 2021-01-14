@@ -66,9 +66,8 @@ namespace HexMap
             if (int.TryParse(inputX.text, out cellX) && int.TryParse(inputY.text, out cellY))
             {
                 Runtime.HexMap.instance.mapCamera.MoveToCell(cellX, cellY);
-                var currPos = Runtime.HexMap.instance.mapCamera.GetCenterPosition();
+                var currPos = Runtime.HexMap.instance.mapCamera.centerPosition;
                 var chunkXZ = Runtime.HexMap.instance.hexGrid.PositionToCellXZ(currPos);
-                Debug.Log(chunkXZ);
             }
         }
 
@@ -81,7 +80,6 @@ namespace HexMap
                 Vector2 pos;
                 if (RectTransformUtility.ScreenPointToLocalPointInRectangle(planeRect, Input.mousePosition, null, out pos))
                 {
-                    Debug.Log("mousePosition :" + pos);
                     UIPositionToCellXZAndGoto(pos);
                 }
             }
@@ -89,7 +87,7 @@ namespace HexMap
 
         private void RefreshMinmpaShow()
         {
-            var currPos = mapCamera.GetCenterPosition();
+            var currPos = mapCamera.centerPosition;
             var chunkXZ = hexGrid.PositionToCellXZ(currPos);
             RectTransform rect = pointer.parent.GetComponent<RectTransform>();
             float posX = chunkXZ.x * rect.rect.width / hexGrid.gridRowCount - rect.rect.width / 2;
