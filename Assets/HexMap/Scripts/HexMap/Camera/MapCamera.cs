@@ -10,7 +10,6 @@ namespace HexMap.Runtime
         public float keyboardMovementSpeed = 5f;
 
         readonly static Vector3 VIEW_CENTER_POINT = new Vector3(0.5f, 0.5f, 0);
-        readonly static Vector3 VIEW_CENTER_TOP_POINT = new Vector3(0.5f, 1f, 0);
 
         public Camera cam { get; private set; }
         public TouchInputController touchInputController { get; private set; }
@@ -18,7 +17,6 @@ namespace HexMap.Runtime
         public MobilePickingController mobilePickingController { get; private set; }
 
         public Vector3 centerPosition => GetViewPosition(VIEW_CENTER_POINT);
-        public Vector3 centerTopPosition => GetViewPosition(VIEW_CENTER_TOP_POINT);
 
         public Vector2 keyboardInput
         {
