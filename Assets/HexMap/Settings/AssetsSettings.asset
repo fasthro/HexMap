@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a13f93843b8c43b7b041c49f1fbe5fd4, type: 3}
+  m_Name: AssetsSettings
+  m_EditorClassIdentifier: 
+  assetsTypes:
+  - typeName: Terrain
+    assetsDirectory:
+    - Assets/Art/Map/Terrain/Prefab
+    - Assets/Art/Map/Terrain/Prefab
+    assets:
+    - name: 
+      index: 0
+      terrain: 0
+      radius: 0
+      gameObject: {fileID: 0}
+  - typeName: Road
+    assetsDirectory:
+    - Assets/Art/Map/Road/Prefab
+    assets: []

@@ -3,20 +3,28 @@
  * @Date: 2021-01-12 12:14:37
  * @Description: 
  */
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using HexMap.Runtime;
+using UnityEditor;
 
 namespace HexMap
 {
     public class MapEditor : MonoBehaviour
     {
+        public static MapEditor instance { get; private set; }
+
         public string mapXmlPath;
         public string prefabXmlPath;
         public EditorModel defaultEditorModel = EditorModel.Hex;
         public Runtime.HexMap hexMap;
+
+        public MapEditorSettings editorSettings;
+        public AssetsSettings assetsSettings;
 
         public UnityEvent onCompleted;
 
@@ -26,10 +34,15 @@ namespace HexMap
         private bool _isLoaded;
         private bool _isParsed;
 
+        private void Awake()
+        {
+            instance = this;
+        }
+
         void Start()
         {
             #region initialize
-            
+
             hexMap.Initialize(true);
             hexMap.SetEditorModel(defaultEditorModel);
 
@@ -48,6 +61,7 @@ namespace HexMap
             prefabParser = new PrefabParser(prefabXmlPath);
             // prefabParser.LoadXml();
             // prefabParser.LoadXml();
+
             #endregion
         }
 

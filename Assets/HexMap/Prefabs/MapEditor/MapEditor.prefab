@@ -49,6 +49,8 @@ MonoBehaviour:
   prefabXmlPath: Assets/HexMap/Data/prefab.xml
   defaultEditorModel: 0
   hexMap: {fileID: 5785903191917041280}
+  editorSettings: {fileID: 11400000, guid: 4b4a2a469f8c04648b955faa6341bb1b, type: 2}
+  assetsSettings: {fileID: 11400000, guid: 83d21b359f61c424a86a3fb63e991d00, type: 2}
   onCompleted:
     m_PersistentCalls:
       m_Calls: []
@@ -128,6 +130,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0.000009536743
+      objectReference: {fileID: 0}
+    - target: {fileID: 3025885672936979343, guid: 537ef120e7c326c4fa651ab8b6317c71,
+        type: 3}
+      propertyPath: m_Size
+      value: 0.84559995
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 537ef120e7c326c4fa651ab8b6317c71, type: 3}
