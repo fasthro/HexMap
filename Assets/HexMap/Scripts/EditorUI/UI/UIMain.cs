@@ -22,8 +22,6 @@ namespace HexMap
         public InputField inputY;
         public Button btnGoto;
 
-        public Button btnSave;
-
         #endregion top
 
         #region minimap
@@ -31,8 +29,14 @@ namespace HexMap
         public RectTransform planeRect;
         public Transform pointer;
         public Text textPosition;
-        public Camera UICamera;
+        
         #endregion minimap
+
+        #region assets
+
+        public Dropdown drapDpwnAssetType;
+        
+        #endregion
 
         private MapCamera mapCamera;
         private HexGrid hexGrid;
@@ -41,6 +45,20 @@ namespace HexMap
         {
             drapDpwnEditorModel.onValueChanged.AddListener(OnValueChanged_EditorModel);
             btnGoto.onClick.AddListener(OnGotoButtonClick);
+
+            drapDpwnAssetType.options = new List<Dropdown.OptionData>()
+            {
+                new Dropdown.OptionData("Terrain 1"),
+                new Dropdown.OptionData("Terrain 2"),
+                new Dropdown.OptionData("Terrain 3"),
+                new Dropdown.OptionData("Terrain 4"),
+                new Dropdown.OptionData("Terrain 5"),
+                new Dropdown.OptionData("Terrain 6"),
+                
+                new Dropdown.OptionData("Road"),
+                new Dropdown.OptionData("Town"),
+                new Dropdown.OptionData("Stronghold"),
+            };
         }
 
         private void Start()

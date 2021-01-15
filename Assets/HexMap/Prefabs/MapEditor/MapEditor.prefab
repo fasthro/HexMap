@@ -124,6 +124,11 @@ PrefabInstance:
       propertyPath: m_Pivot.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5278708980127223726, guid: 537ef120e7c326c4fa651ab8b6317c71,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.000009536743
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 537ef120e7c326c4fa651ab8b6317c71, type: 3}
 --- !u!4 &210104319541577030 stripped
@@ -199,16 +204,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 346555691813813288, guid: c121a1e9f28fa34489991b1dba255893,
-        type: 3}
-      propertyPath: m_FOVAxisMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 346555691813813288, guid: c121a1e9f28fa34489991b1dba255893,
-        type: 3}
-      propertyPath: field of view
-      value: 9.302419
-      objectReference: {fileID: 0}
     - target: {fileID: 3252718936656341825, guid: c121a1e9f28fa34489991b1dba255893,
         type: 3}
       propertyPath: boundaryMin.y
@@ -218,6 +213,16 @@ PrefabInstance:
         type: 3}
       propertyPath: boundaryMax.x
       value: 2640
+      objectReference: {fileID: 0}
+    - target: {fileID: 346555691813813288, guid: c121a1e9f28fa34489991b1dba255893,
+        type: 3}
+      propertyPath: m_FOVAxisMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 346555691813813288, guid: c121a1e9f28fa34489991b1dba255893,
+        type: 3}
+      propertyPath: field of view
+      value: 9.302419
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c121a1e9f28fa34489991b1dba255893, type: 3}
