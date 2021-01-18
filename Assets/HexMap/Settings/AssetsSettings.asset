@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   assetsTypes:
   - typeName: Terrain
-    assetsDirectory:
-    - Assets/Art/Map/Terrain/Prefab
+    assetsDirectorys:
     - Assets/Art/Map/Terrain/Prefab
     assets:
     - name: 
@@ -24,6 +23,6 @@ MonoBehaviour:
       radius: 0
       gameObject: {fileID: 0}
   - typeName: Road
-    assetsDirectory:
+    assetsDirectorys:
     - Assets/Art/Map/Road/Prefab
     assets: []

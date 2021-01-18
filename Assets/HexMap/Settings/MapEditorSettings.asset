@@ -12,4 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 692e803f8de8e1f4ca30c2b644674a3e, type: 3}
   m_Name: MapEditorSettings
   m_EditorClassIdentifier: 
-  syncAssetDirectory: 
+  projectDirectory: E:/Client/Unity
+  assetDirectorys:
+  - Assets/Art/Common
+  - Assets/Art/Effect
+  - Assets/Art/Map
+  - Assets/Art/Shaders

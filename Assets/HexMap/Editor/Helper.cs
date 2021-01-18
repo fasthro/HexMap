@@ -13,7 +13,7 @@ namespace HexMap
         [MenuItem("HexMap/同步美术资源")]
         public static void SyncArtAsset()
         {
-            
+            SyncAsset.Sync();
         }
         
         /// <summary>
@@ -22,7 +22,7 @@ namespace HexMap
         [MenuItem("HexMap/生成美术资源索引")]
         public static void GenerateAssetIndexMap()
         {
-            
+            GenerateAssetIndex.Gentrate();
         }
     }
 }

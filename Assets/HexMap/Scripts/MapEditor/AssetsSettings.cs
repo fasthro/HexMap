@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 #if UNITY_EDITOR
@@ -10,7 +11,7 @@ namespace HexMap
     [System.Serializable]
     public class Asset
     {
-        public string name;
+        public string name => gameObject.name;
         public int index;
         public int terrain;
         public int radius;
@@ -21,9 +22,8 @@ namespace HexMap
     public class AssetType
     {
         public string typeName;
-        public string[] assetsDirectory;
-
-        public Asset[] assets;
+        public string[] assetsDirectorys;
+        public List<Asset> assets = new List<Asset>();
     }
 
     [CreateAssetMenu(fileName = "AssetsSettings", menuName = "HexMap/AssetsSettings")]
@@ -33,13 +33,7 @@ namespace HexMap
 
         public List<Dropdown.OptionData> GetDropdownAssetTypes()
         {
-            List<Dropdown.OptionData> datas = new List<Dropdown.OptionData>();
-            for (int i = 0; i < assetsTypes.Length; i++)
-            {
-                datas.Add(new Dropdown.OptionData(assetsTypes[i].typeName));
-            }
-
-            return datas;
+            return assetsTypes.Select(assetType => new Dropdown.OptionData(assetType.typeName)).ToList();
         }
     }
 }

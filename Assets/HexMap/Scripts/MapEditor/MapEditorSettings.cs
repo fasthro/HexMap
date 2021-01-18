@@ -10,7 +10,10 @@ namespace HexMap
         /// <summary>
         /// 同步美术资源目录
         /// </summary>
-        [Header("同步美术资源目录")]
-        public string syncAssetDirectory;
+        [Tooltip("资源项目目录")]
+        public string projectDirectory;
+        
+        [Tooltip("资源目录列表")]
+        public string[] assetDirectorys;
     }
 }
