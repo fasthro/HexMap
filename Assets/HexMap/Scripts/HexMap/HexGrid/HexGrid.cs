@@ -3,6 +3,7 @@
  * @Date: 2021-01-07 16:56:09
  * @Description: 
  */
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -57,6 +58,19 @@ namespace HexMap.Runtime
             gameObject.SetActive(editor);
         }
 
+        public void ForeRefresh(int xChunk, int zChunk)
+        {
+            activeChunkX = -1;
+            activeChunkZ = -1;
+
+            foreach (var index in _chunkActives2)
+            {
+                chunks[index].isActive = false;
+            }
+
+            Refresh(xChunk, zChunk);
+        }
+
         public void Refresh(int xChunk, int zChunk)
         {
             if (activeChunkX == xChunk && activeChunkZ == zChunk)
@@ -69,9 +83,11 @@ namespace HexMap.Runtime
 
             int x = xChunk - 1;
             int z = zChunk - 1;
-            for (int tz = z; tz < z + 3; tz++)
+            int mx = x + 3 > chunkRowCount ? chunkRowCount : x + 3;
+            int mz = z + 3 > chunkColumnCount ? chunkColumnCount : z + 3;
+            for (int tz = z; tz < mz; tz++)
             {
-                for (int tx = x; tx < x + 3; tx++)
+                for (int tx = x; tx < mx; tx++)
                 {
                     if (tx >= 0 && tz >= 0)
                     {
@@ -86,6 +102,7 @@ namespace HexMap.Runtime
                     }
                 }
             }
+
             foreach (var index in _chunkActives)
             {
                 if (!_chunkActives2.Contains(index))
@@ -106,14 +123,16 @@ namespace HexMap.Runtime
             var chunk = chunks[chunkIndex];
             if (chunk == null || chunk.isActive)
                 return;
-
             chunk.isActive = true;
+            chunk.cells.Clear();
 
             var sx = chunk.x * chunkRowSize;
             var sz = chunk.z * chunkColumnSize;
-            for (int tz = sz; tz < sz + chunkColumnSize; tz++)
+            var msx = sx + chunkColumnSize > gridRowCount ? gridRowCount : sx + chunkColumnSize;
+            var msz = sz + chunkColumnSize > gridRowCount ? gridRowCount : sz + chunkColumnSize;
+            for (int tz = sz; tz < msz; tz++)
             {
-                for (int tx = sx; tx < sx + chunkRowSize; tx++)
+                for (int tx = sx; tx < msx; tx++)
                 {
                     chunk.AddHexCell(PoolGetHexCell(tx, tz, chunkIndex));
                 }
@@ -122,18 +141,24 @@ namespace HexMap.Runtime
 
         private HexChunk PoolGetHexChunk(int x, int z, int index)
         {
+            HexChunk chunk = null;
             if (chunks[index] != null)
-                return chunks[index];
+            {
+                chunk = chunks[index];
+            }
 
-            HexChunk chunk;
-            if (_chunkStack.Count <= 0)
+            if (chunk == null)
             {
-                chunk = chunks[index] = GameObject.Instantiate<HexChunk>(hexChunk);
+                if (_chunkStack.Count <= 0)
+                {
+                    chunk = chunks[index] = GameObject.Instantiate<HexChunk>(hexChunk);
+                }
+                else
+                {
+                    chunk = chunks[index] = _chunkStack.Pop();
+                }
             }
-            else
-            {
-                chunk = chunks[index] = _chunkStack.Pop();
-            }
+
             chunk.index = index;
             chunk.x = x;
             chunk.z = z;
@@ -176,17 +201,23 @@ namespace HexMap.Runtime
                 return null;
             }
 
+            HexCell cell = null;
             if (cells[index] != null)
-                return cells[index];
-
-            HexCell cell;
-            if (_cellStack.Count <= 0)
             {
-                cell = cells[index] = GameObject.Instantiate<HexCell>(hexCell);
+                cell = cells[index];
             }
-            else
+
+            if (cell == null)
             {
-                cell = cells[index] = _cellStack.Pop();
+                if (_cellStack.Count <= 0)
+                {
+                    cell = cells[index] = GameObject.Instantiate<HexCell>(hexCell);
+                }
+                else
+                {
+                    // cell = cells[index] = GameObject.Instantiate<HexCell>(hexCell);
+                    cell = cells[index] = _cellStack.Pop();
+                }
             }
 
             Vector3 position;
@@ -203,12 +234,16 @@ namespace HexMap.Runtime
 
             cell.transform.SetParent(chunks[chunkIndex].transform);
             cell.transform.localPosition = position;
+
+            cell.SetActive(true);
+
             return cell;
         }
 
         private void PoolRecycleHexCell(HexCell cell)
         {
             cells[cell.index] = null;
+            cell.SetActive(false);
             cell.transform.SetParent(garbageRoot);
             _cellStack.Push(cell);
         }

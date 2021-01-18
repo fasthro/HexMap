@@ -3,8 +3,15 @@
  * @Date: 2021-01-07 11:05:32
  * @Description: 
  */
+
 namespace HexMap
 {
+    public enum MapLayerType
+    {
+        Prefab,
+        Terrain,
+    }
+
     public class MapLayer
     {
         public string name { get; private set; }
@@ -14,6 +21,11 @@ namespace HexMap
         {
             this.name = name;
             this.data = data;
+        }
+
+        public int GetData(int id)
+        {
+            return id >= 0 && id < data.Length ? data[id] : -1;
         }
 
         public override string ToString()

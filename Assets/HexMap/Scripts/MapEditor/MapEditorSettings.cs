@@ -15,5 +15,11 @@ namespace HexMap
         
         [Tooltip("资源目录列表")]
         public string[] assetDirectorys;
+        
+        [Tooltip("地图XML数据文件路径")]
+        public string mapXmlPath;
+        
+        [Tooltip("地图资源XML数据文件路径")]
+        public string prefabXmlPath;
     }
 }

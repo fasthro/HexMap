@@ -3,8 +3,10 @@
  * @Date: 2021-01-08 14:19:07
  * @Description: 
  */
+
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace HexMap.Runtime
@@ -17,17 +19,36 @@ namespace HexMap.Runtime
         public int z;
         public HexCoord coordinates;
         public Vector3 position;
-        public readonly HexCell[] neighbors = new HexCell[6];
+
+        private readonly HexCell[] neighbors = new HexCell[6];
+
+        private PoolIdentity _displayObject;
 
         public HexCell GetNeighbor(HexDirection direction)
         {
-            return neighbors[(int)direction];
+            return neighbors[(int) direction];
         }
 
         public void SetNeighbor(HexDirection direction, HexCell cell)
         {
-            neighbors[(int)direction] = cell;
-            cell.neighbors[(int)direction.Opposite()] = this;
+            neighbors[(int) direction] = cell;
+            cell.neighbors[(int) direction.Opposite()] = this;
+        }
+
+        public void SetActive(bool active)
+        {
+            if (_displayObject != null)
+                MapEditor.instance.RecycleGameObject(_displayObject);
+
+            if (active)
+            {
+                _displayObject = MapEditor.instance.GetGameObject(index);
+                if (_displayObject != null)
+                {
+                    _displayObject.transform.SetParent(transform);
+                    _displayObject.transform.localPosition = Vector3.zero;
+                }
+            }
         }
     }
 }

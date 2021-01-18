@@ -3,6 +3,7 @@
  * @Date: 2021-01-06 17:17:08
  * @Description: 
  */
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -29,12 +30,20 @@ namespace HexMap
             _xmlPath = xmlPath;
         }
 
-        public void LoadXml()
+        public void LoadXml(bool useThread = true)
         {
             if (isLoading) return;
             isLoaded = false;
             isLoading = true;
-            ThreadUtils.Run<string>(Load, _xmlPath, onLoaded);
+            if (useThread)
+            {
+                ThreadUtils.Run<string>(Load, _xmlPath, onLoaded);
+            }
+            else
+            {
+                Load(_xmlPath);
+                onLoaded();
+            }
         }
 
         private void onLoaded()
@@ -51,12 +60,20 @@ namespace HexMap
             _rootElement = sp.ToXml();
         }
 
-        public void ParseXml()
+        public void ParseXml(bool useThread = true)
         {
             if (isParsinging) return;
             isParsed = false;
             isParsinging = true;
-            ThreadUtils.Run(OnParseXml, OnParsed);
+            if (useThread)
+            {
+                ThreadUtils.Run(OnParseXml, OnParsed);
+            }
+            else
+            {
+                OnParseXml();
+                OnParsed();
+            }
         }
 
         protected abstract void OnParseXml();

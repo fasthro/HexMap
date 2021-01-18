@@ -24,5 +24,14 @@ namespace HexMap
         {
             GenerateAssetIndex.Gentrate();
         }
+        
+        /// <summary>
+        /// 移除丢失脚本
+        /// </summary>
+        [MenuItem("HexMap/Remove Missing-MonoBehavior Component")]
+        public static void RemoveMissingMonoBehaviorComponent()
+        {
+            CheckMissScripts.RemoveMissComponent();
+        }
     }
 }

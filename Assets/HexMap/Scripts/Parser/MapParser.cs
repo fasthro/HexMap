@@ -3,6 +3,7 @@
  * @Date: 2021-01-06 17:38:03
  * @Description: 
  */
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Security;
@@ -12,30 +13,46 @@ namespace HexMap
 {
     public class MapParser : XmlParser
     {
-        public Dictionary<string, MapLayer> mapLayerDict = new Dictionary<string, MapLayer>();
+        private Dictionary<MapLayerType, MapLayer> _layerDict;
+
         public MapParser(string xmlPath) : base(xmlPath)
         {
+            _layerDict = new Dictionary<MapLayerType, MapLayer>();
         }
 
         protected override void OnParseXml()
         {
-            mapLayerDict.Clear();
+            _layerDict.Clear();
 
             var layersRoot = _rootElement.SearchForChildByTag("Layers");
+            if (layersRoot == null) return;
             var layers = layersRoot.Children;
             foreach (var layer in layers)
             {
-                SecurityElement layerElement = (SecurityElement)layer;
-                string layerName = layerElement.Attribute("name");
-                string data = layerElement.Attribute("data");
-                string[] datas = data.Split(',');
-                int[] value = new int[data.Length];
-                for (int i = 0; i < datas.Length; i++)
+                var layerElement = (SecurityElement) layer;
+                var layerName = layerElement.Attribute("name") ?? string.Empty;
+                var data = layerElement.Attribute("data") ?? string.Empty;
+                var datas = data.Split(',');
+                var value = new int[data.Length];
+                for (var i = 0; i < datas.Length; i++)
                 {
                     value[i] = int.Parse(datas[i]);
                 }
-                mapLayerDict.Add(layerName, new MapLayer(layerName, value));
+
+                if (layerName.Equals("prefab"))
+                {
+                    _layerDict.Add(MapLayerType.Prefab, new MapLayer(layerName, value));
+                }
+                else if (layerName.Equals("terrainType"))
+                {
+                    _layerDict.Add(MapLayerType.Terrain, new MapLayer(layerName, value));
+                }
             }
+        }
+
+        public int GetDataWithId(MapLayerType lt, int id)
+        {
+            return _layerDict.ContainsKey(lt) ? _layerDict[lt].GetData(id) : -1;
         }
     }
 }

@@ -2,9 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-
 #if UNITY_EDITOR
-
 using UnityEditor;
 
 #endif
@@ -14,10 +12,11 @@ namespace HexMap
     [System.Serializable]
     public class Asset
     {
-        public string name => gameObject.name;
         public int index;
         public int terrain;
         public int radius;
+
+        public string name => gameObject.name;
         public GameObject gameObject;
     }
 
@@ -26,7 +25,8 @@ namespace HexMap
     {
         public string typeName;
         public string[] assetsDirectorys;
-        public List<Asset> assets = new List<Asset>();
+
+        public Asset[] assets;
     }
 
     [CreateAssetMenu(fileName = "AssetsSettings", menuName = "HexMap/AssetsSettings")]
@@ -41,15 +41,15 @@ namespace HexMap
 
         public List<Asset> GetAssetListByTypeName(string typeName)
         {
-            List<Asset> assets = new List<Asset>();
-            for (int i = 0; i < assetsTypes.Length; i++)
+            var list = new List<Asset>();
+            foreach (var assetsType in assetsTypes)
             {
-                if (assetsTypes[i].typeName == typeName)
+                if (assetsType.typeName == typeName)
                 {
-                    assets = new List<Asset>(assetsTypes[i].assets);
+                    list.AddRange(assetsType.assets);
                 }
             }
-            return assets;
+            return list;
         }
     }
 }

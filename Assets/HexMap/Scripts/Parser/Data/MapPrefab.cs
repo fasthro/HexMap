@@ -8,19 +8,22 @@ namespace HexMap
     public class MapPrefab
     {
         public int index { get; private set; }
-        public string prefab { get; private set; }
+        public string assetPath { get; private set; }
         public int terrain { get; private set; }
+        public int radius { get; private set; }
+        
 
-        public MapPrefab(int index, string prefab, int terrain)
+        public MapPrefab(int index, string assetPath, int terrain, int radius)
         {
             this.index = index;
-            this.prefab = prefab;
+            this.assetPath = assetPath;
             this.terrain = terrain;
+            this.radius = radius;
         }
 
         public override string ToString()
         {
-            return $"MapPrefab: index = {index} prefab = {prefab} terrain = {terrain}";
+            return $"MapPrefab: index = {index} prefab = {assetPath} terrain = {terrain} radius = {radius}";
         }
     }
 }

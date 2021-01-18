@@ -43,7 +43,7 @@ namespace HexMap.Runtime
             ground.Initialize(isEditor);
             hexGrid.Initialize(isEditor);
             mapCamera.Initialize(isEditor);
-            mapCamera.MoveToCell(750, 750);
+            mapCamera.MoveToCell(100, 100);
         }
 
         public void SetEditorModel(EditorModel model)
@@ -77,6 +77,15 @@ namespace HexMap.Runtime
             if (chunkXZ.x > 0 && chunkXZ.y > 0)
             {
                 hexGrid.Refresh(chunkXZ.x, chunkXZ.y);
+            }
+        }
+
+        public void ForeRefresh()
+        {
+            var chunkXZ = hexGrid.PositionToChunkXZ(mapCamera.centerPosition);
+            if (chunkXZ.x > 0 && chunkXZ.y > 0)
+            {
+                hexGrid.ForeRefresh(chunkXZ.x, chunkXZ.y);
             }
         }
 
