@@ -247,6 +247,66 @@ PrefabInstance:
       propertyPath: planeRect
       value: 
       objectReference: {fileID: 7120375552003511995}
+    - target: {fileID: 3637598982372241267, guid: af8b9734384dfb847a4d91f806d50d5e,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3637598982372241267, guid: af8b9734384dfb847a4d91f806d50d5e,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950567132728319904, guid: af8b9734384dfb847a4d91f806d50d5e,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950567132728319904, guid: af8b9734384dfb847a4d91f806d50d5e,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950567132728319904, guid: af8b9734384dfb847a4d91f806d50d5e,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950567132728319904, guid: af8b9734384dfb847a4d91f806d50d5e,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5829990222502400566, guid: af8b9734384dfb847a4d91f806d50d5e,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5829990222502400566, guid: af8b9734384dfb847a4d91f806d50d5e,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1537887715989809127, guid: af8b9734384dfb847a4d91f806d50d5e,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1537887715989809127, guid: af8b9734384dfb847a4d91f806d50d5e,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6410549346993303086, guid: af8b9734384dfb847a4d91f806d50d5e,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6410549346993303086, guid: af8b9734384dfb847a4d91f806d50d5e,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: af8b9734384dfb847a4d91f806d50d5e, type: 3}
 --- !u!1 &7037172969402156666 stripped

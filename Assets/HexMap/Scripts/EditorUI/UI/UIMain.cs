@@ -29,14 +29,22 @@ namespace HexMap
         public RectTransform planeRect;
         public Transform pointer;
         public Text textPosition;
-        
+
         #endregion minimap
 
         #region assets
 
         public Dropdown drapDpwnAssetType;
-        
-        #endregion
+        public RectTransform gridRect;
+        public GameObject gridrecord;
+        private List<GameObject> gridList = new List<GameObject>();
+        public GameObject preView;
+        public Transform roadRoot;
+        public Transform terrainRoot;
+        private List<Asset> showAssets = new List<Asset>();
+        private Toggle selectedToggle;
+
+        #endregion assets
 
         private MapCamera mapCamera;
         private HexGrid hexGrid;
@@ -45,6 +53,7 @@ namespace HexMap
         {
             drapDpwnEditorModel.onValueChanged.AddListener(OnValueChanged_EditorModel);
             btnGoto.onClick.AddListener(OnGotoButtonClick);
+            drapDpwnAssetType.onValueChanged.AddListener(OnValueChanged_DrapDpwnAssetType);
         }
 
         private void Start()
@@ -56,13 +65,24 @@ namespace HexMap
         public void Initialize(EditorModel model)
         {
             drapDpwnAssetType.options = MapEditor.instance.assetsSettings.GetDropdownAssetTypes();
-            
+            drapDpwnAssetType.SetValueWithoutNotify(0);
+            OnValueChanged_DrapDpwnAssetType(0);
             drapDpwnEditorModel.value = (int)model;
         }
 
         private void OnValueChanged_EditorModel(int value)
         {
             Runtime.HexMap.instance.SetEditorModel((EditorModel)value);
+        }
+
+        private void OnValueChanged_DrapDpwnAssetType(int value)
+        {
+            if (selectedToggle)
+            {
+                selectedToggle.SetIsOnWithoutNotify(false);
+            }
+            preView.SetActive(false);
+            ShowAssetList(drapDpwnAssetType.captionText.text);
         }
 
         private void OnGotoButtonClick()
@@ -102,7 +122,7 @@ namespace HexMap
             textPosition.text = string.Format("X:{0} Y:{1}", chunkXZ.x, chunkXZ.y);
         }
 
-        private void UIPositionToCellXZAndGoto(Vector2 pos) 
+        private void UIPositionToCellXZAndGoto(Vector2 pos)
         {
             if (pos.x < planeRect.rect.width / 2 && pos.x > -planeRect.rect.width / 2)
             {
@@ -112,6 +132,68 @@ namespace HexMap
                     int cellY = (int)(-(pos.y - planeRect.rect.height / 2) / planeRect.rect.height * hexGrid.gridColumnCount);
 
                     Runtime.HexMap.instance.mapCamera.MoveToCell(cellX, cellY);
+                }
+            }
+        }
+
+        public void ShowAssetList(string typeName)
+        {
+            showAssets = MapEditor.instance.assetsSettings.GetAssetListByTypeName(typeName);
+            for (int i = 0; i < gridList.Count; i++)
+            {
+                gridList[i].SetActive(false);
+            }
+
+            for (int i = 0; i < showAssets.Count; i++)
+            {
+                if (i < gridList.Count)
+                {
+                    gridList[i].SetActive(true);
+                    gridList[i].GetComponentInChildren<Text>().text = showAssets[i].name;
+                }
+                else
+                {
+                    GenerateGrids(i, showAssets[i].name);
+                }
+            }
+        }
+
+        public void GenerateGrids(int index, string showName)
+        {
+            GameObject go = Instantiate(gridrecord, gridRect);
+            go.GetComponent<Toggle>().isOn = false;
+            gridList.Add(go);
+            go.name = index.ToString();
+            go.GetComponentInChildren<Text>().text = showName;
+            go.GetComponent<Toggle>().onValueChanged.AddListener((isOn) =>
+            {
+                OnToggleChanged(isOn, int.Parse(go.name));
+                selectedToggle = go.GetComponent<Toggle>();
+            });
+            go.SetActive(true);
+        }
+
+        private void OnToggleChanged(bool isOn, int index)
+        {
+            preView.SetActive(isOn);
+            if (isOn)
+            {
+                for (int i = 0; i < roadRoot.childCount; i++)
+                {
+                    Destroy(roadRoot.GetChild(i).gameObject);
+                }
+                for (int i = 0; i < terrainRoot.childCount; i++)
+                {
+                    Destroy(terrainRoot.GetChild(i).gameObject);
+                }
+
+                if (drapDpwnAssetType.captionText.text == "Road")
+                {
+                    Instantiate(showAssets[index].gameObject, roadRoot);
+                }
+                else if (drapDpwnAssetType.captionText.text == "Terrain")
+                {
+                    Instantiate(showAssets[index].gameObject, terrainRoot);
                 }
             }
         }
