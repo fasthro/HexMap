@@ -29,6 +29,14 @@ namespace HexMap
                 this.data[i] = -1;
         }
 
+        public int[] GetDatas()
+        {
+            var value = new int[_original.Length];
+            for (var i = 0; i < data.Length; i++)
+                value[i] = _GetData(i);
+            return value;
+        }
+
         public int GetData(int id)
         {
             return id >= 0 && id < data.Length ? _GetData(id) : -1;
