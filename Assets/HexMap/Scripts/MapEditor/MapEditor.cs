@@ -34,9 +34,6 @@ namespace HexMap
         private bool _isLoaded;
         private bool _isParsed;
 
-        private Dictionary<string, GameObject> _prefabDict = new Dictionary<string, GameObject>();
-        private Dictionary<string, Stack<PoolIdentity>> _goStackDict = new Dictionary<string, Stack<PoolIdentity>>();
-
         private void Awake()
         {
             instance = this;
@@ -86,70 +83,12 @@ namespace HexMap
             }
         }
 
-        public PoolIdentity GetGameObject(int mapId)
+        public string GetPrefabAssetPath(int mapId)
         {
             var data = MapEditor.instance.mapParser.GetDataWithId(MapLayerType.Prefab, mapId);
             if (data == -1) return null;
-
             var mapPrefab = MapEditor.instance.prefabParser.GetWithId(data);
-            if (mapPrefab == null) return null;
-            
-            var po = GetGameObject(mapPrefab.assetPath);
-            po.index = mapId;
-            
-            return po;
-        }
-
-        public void RecycleGameObject(PoolIdentity po)
-        {
-            po.transform.SetParent(null);
-            if (!_goStackDict.ContainsKey(po.assetPath))
-            {
-                var poolStack = new Stack<PoolIdentity>();
-                poolStack.Push(po);
-                _goStackDict.Add(po.assetPath, poolStack);
-            }
-            else
-            {
-                _goStackDict[po.assetPath].Push(po);
-            }
-        }
-
-        private GameObject GetPrefab(string assetPath)
-        {
-            GameObject prefab;
-            if (!_prefabDict.ContainsKey(assetPath))
-            {
-                var path = assetPath + ".prefab";
-                prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-            }
-            else prefab = _prefabDict[assetPath];
-
-            return prefab;
-        }
-
-        private PoolIdentity GetGameObject(string assetPath)
-        {
-            if (!_goStackDict.ContainsKey(assetPath))
-            {
-                return CreateGameObject(assetPath);
-            }
-
-            var poolStack = _goStackDict[assetPath];
-            if (poolStack.Count <= 0)
-            {
-                return CreateGameObject(assetPath);
-            }
-
-            return poolStack.Pop();
-        }
-
-        private PoolIdentity CreateGameObject(string assetPath)
-        {
-            var go = GameObject.Instantiate<GameObject>(GetPrefab(assetPath));
-            var po = go.AddComponent<PoolIdentity>();
-            po.assetPath = assetPath;
-            return po;
+            return mapPrefab == null ? null : mapPrefab.assetPath;
         }
     }
 }

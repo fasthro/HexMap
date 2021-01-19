@@ -63,10 +63,12 @@ namespace HexMap.Runtime
             activeChunkX = -1;
             activeChunkZ = -1;
 
-            foreach (var index in _chunkActives2)
+            foreach (var index in _chunkActives)
             {
-                chunks[index].isActive = false;
+                PoolRecycleHexChunk(chunks[index]);
             }
+
+            _chunkActives.Clear();
 
             Refresh(xChunk, zChunk);
         }
@@ -81,23 +83,39 @@ namespace HexMap.Runtime
             activeChunkX = xChunk;
             activeChunkZ = zChunk;
 
-            int x = xChunk - 1;
-            int z = zChunk - 1;
-            int mx = x + 3 > chunkRowCount ? chunkRowCount : x + 3;
-            int mz = z + 3 > chunkColumnCount ? chunkColumnCount : z + 3;
-            for (int tz = z; tz < mz; tz++)
+            var x = xChunk - 1;
+            var z = zChunk - 1;
+            var mx = x + 3 > chunkRowCount ? chunkRowCount : x + 3;
+            var mz = z + 3 > chunkColumnCount ? chunkColumnCount : z + 3;
+
+            // 优先处理当前视野Chunk
+            var priorityChunkIndex = -1;
+            if (xChunk < mx && zChunk < mz)
             {
-                for (int tx = x; tx < mx; tx++)
+                priorityChunkIndex = xChunk + zChunk * chunkRowCount;
+                if (priorityChunkIndex < chunks.Length)
+                {
+                    PoolGetHexChunk(xChunk, zChunk, priorityChunkIndex);
+                    WakeupChunk(priorityChunkIndex);
+                    _chunkActives2.Add(priorityChunkIndex);
+                }
+            }
+            
+            for (var tz = z; tz < mz; tz++)
+            {
+                for (var tx = x; tx < mx; tx++)
                 {
                     if (tx >= 0 && tz >= 0)
                     {
                         var index = tx + tz * chunkRowCount;
                         if (index < chunks.Length)
                         {
-                            // Debug.Log($"tx:{tx} tz:{tz} index:{index}");
-                            PoolGetHexChunk(tx, tz, index);
-                            WakeupChunk(index);
-                            _chunkActives2.Add(index);
+                            if (priorityChunkIndex != index)
+                            {
+                                PoolGetHexChunk(tx, tz, index);
+                                WakeupChunk(index);
+                                _chunkActives2.Add(index);
+                            }
                         }
                     }
                 }
@@ -137,6 +155,8 @@ namespace HexMap.Runtime
                     chunk.AddHexCell(PoolGetHexCell(tx, tz, chunkIndex));
                 }
             }
+
+            Debug.Log($"Active Chunk: {chunkIndex}");
         }
 
         private HexChunk PoolGetHexChunk(int x, int z, int index)
@@ -173,7 +193,7 @@ namespace HexMap.Runtime
 
         private void PoolRecycleHexChunk(HexChunk chunk)
         {
-            // Debug.Log($"Recycle Chunk: {chunk.index}");
+            Debug.Log($"Recycle Chunk: {chunk.index}");
             chunks[chunk.index] = null;
 
             chunk.isActive = false;

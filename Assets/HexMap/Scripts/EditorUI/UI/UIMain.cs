@@ -46,14 +46,37 @@ namespace HexMap
 
         #endregion assets
 
+        #region info
+
+        public Transform selectInfoRoot;
+        public Text textSelectInfo;
+
+        #endregion
+
+        #region opt
+
+        public Transform optRoot;
+        public Button btnReplace;
+        public Button btnRestore;
+
+        #endregion
+
         private MapCamera mapCamera;
         private HexGrid hexGrid;
+
+        private bool _isSelectedHexCell;
+        private bool _isSelectedAsset;
 
         private void Awake()
         {
             drapDpwnEditorModel.onValueChanged.AddListener(OnValueChanged_EditorModel);
             btnGoto.onClick.AddListener(OnGotoButtonClick);
             drapDpwnAssetType.onValueChanged.AddListener(OnValueChanged_DrapDpwnAssetType);
+            selectInfoRoot.gameObject.SetActive(false);
+            
+            btnReplace.onClick.AddListener(OnReplaceButtonClick);
+            btnRestore.onClick.AddListener(OnRestoreButtonClick);
+            optRoot.gameObject.SetActive(false);
         }
 
         private void Start()
@@ -64,6 +87,8 @@ namespace HexMap
 
         public void Initialize(EditorModel model)
         {
+            _isSelectedHexCell = false;
+            _isSelectedAsset = false;
             drapDpwnAssetType.options = MapEditor.instance.assetsSettings.GetDropdownAssetTypes();
             drapDpwnAssetType.SetValueWithoutNotify(0);
             OnValueChanged_DrapDpwnAssetType(0);
@@ -175,6 +200,7 @@ namespace HexMap
 
         private void OnToggleChanged(bool isOn, int index)
         {
+            _isSelectedAsset = isOn;
             preView.SetActive(isOn);
             if (isOn)
             {
@@ -196,6 +222,36 @@ namespace HexMap
                     Instantiate(showAssets[index].gameObject, terrainRoot);
                 }
             }
+
+            SetOpt();
+        }
+
+        public void SetSelected(bool isSelected, HexCell cell)
+        {
+            _isSelectedHexCell = isSelected;
+            selectInfoRoot.gameObject.SetActive(isSelected);
+            if (isSelected)
+            {
+                textSelectInfo.text = $"焦点坐标 ({cell.x}, {cell.z}) - 地形（山地）-  等级（5）- 无覆盖物";
+            }
+
+            SetOpt();
+        }
+
+        private void SetOpt()
+        {
+            var isOn = _isSelectedHexCell && _isSelectedAsset;
+            optRoot.gameObject.SetActive(isOn);
+        }
+
+        private void OnReplaceButtonClick()
+        {
+            
+        }
+
+        private void OnRestoreButtonClick()
+        {
+            
         }
     }
 }

@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace HexMap.Runtime
 {
-    public class HexCell : MonoBehaviour
+    public class HexCell : MonoBehaviour, IAssetsLoader
     {
         public int index;
         public int chunkIndex;
@@ -22,7 +22,11 @@ namespace HexMap.Runtime
 
         private readonly HexCell[] neighbors = new HexCell[6];
 
-        private PoolIdentity _displayObject;
+        private string _terrainAssetId;
+        private AssetIdentity _terrainAsset;
+
+        private string _displayAssetId;
+        private AssetIdentity _displayAsset;
 
         public HexCell GetNeighbor(HexDirection direction)
         {
@@ -37,17 +41,60 @@ namespace HexMap.Runtime
 
         public void SetActive(bool active)
         {
-            if (_displayObject != null)
-                MapEditor.instance.RecycleGameObject(_displayObject);
-
+            var assetId = MapEditor.instance.GetPrefabAssetPath(index);
             if (active)
             {
-                _displayObject = MapEditor.instance.GetGameObject(index);
-                if (_displayObject != null)
+                if (assetId == null)
                 {
-                    _displayObject.transform.SetParent(transform);
-                    _displayObject.transform.localPosition = Vector3.zero;
+                    if (_terrainAsset != null)
+                        Assets.Recycle(_terrainAsset);
+
+                    _terrainAsset = null;
+                    _terrainAssetId = null;
                 }
+                else
+                {
+                    if (_terrainAssetId != null)
+                    {
+                        if (assetId != _terrainAssetId)
+                        {
+                            if (_terrainAsset != null)
+                            {
+                                Assets.Recycle(_terrainAsset);
+                                _terrainAsset = null;
+                            }
+
+                            _terrainAssetId = assetId;
+                            Assets.Add(assetId, this);
+                        }
+                    }
+                    else
+                    {
+                        _terrainAssetId = assetId;
+                        Assets.Add(assetId, this);
+                    }
+                }
+            }
+            else
+            {
+                if (_terrainAsset != null)
+                    Assets.Recycle(_terrainAsset);
+
+                if (_terrainAssetId != null)
+                    Assets.Remove(assetId, this);
+
+                _terrainAsset = null;
+                _terrainAssetId = null;
+            }
+        }
+
+        public void OnLoadAsset(AssetIdentity identity)
+        {
+            if (_terrainAssetId == identity.id)
+            {
+                _terrainAsset = identity;
+                _terrainAsset.transform.SetParent(transform);
+                _terrainAsset.transform.localPosition = Vector3.zero;
             }
         }
     }

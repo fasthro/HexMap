@@ -6,6 +6,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace HexMap.Runtime
 {
@@ -28,7 +29,13 @@ namespace HexMap.Runtime
 
         public Transform pickGroundEffect;
         public int pickGroundIndex { get; private set; }
-
+        
+        [Tooltip("资源节点")]
+        public Transform AssetsRoot;
+        [FormerlySerializedAs("AssetLoadVelocity")] [Tooltip("资源加载速度（蛋帧加载数量）,默认为 chunkRowSize * chunkColumnSize")]
+        public int assetLoadVelocity = 0;
+        [FormerlySerializedAs("AssetLoadRestFrame")] [Tooltip("资源加载间歇帧数")]
+        public int assetLoadRestFrame = 5;
         public EditorModel editorModel { get; private set; }
 
         void Awake()
@@ -44,6 +51,9 @@ namespace HexMap.Runtime
             hexGrid.Initialize(isEditor);
             mapCamera.Initialize(isEditor);
             mapCamera.MoveToCell(100, 100);
+
+            Assets.VELOCITY = assetLoadVelocity <= 0 ? hexGrid.chunkRowSize * hexGrid.chunkColumnSize : assetLoadVelocity;
+            Assets.REST_FRAME = assetLoadRestFrame;
         }
 
         public void SetEditorModel(EditorModel model)
@@ -68,7 +78,8 @@ namespace HexMap.Runtime
 
         void Update()
         {
-
+            Assets.Update();
+            
 #if UNITY_EDITOR
             Debug.DrawLine(mapCamera.transform.position, mapCamera.centerPosition, Color.red);
 #endif
@@ -94,6 +105,7 @@ namespace HexMap.Runtime
             pickHexIndex = cell.index;
             pickHexEffect.gameObject.SetActive(true);
             pickHexEffect.localPosition = cell.position;
+            EditorUI.instance.main.SetSelected(true, cell);
         }
 
         public void OnPickGroundCell(GroundCell cell)

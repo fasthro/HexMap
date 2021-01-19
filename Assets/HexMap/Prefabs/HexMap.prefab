@@ -562,6 +562,36 @@ MonoBehaviour:
     type: 3}
   hexCell: {fileID: 8578834590097393748, guid: 4cc649d039bf64e4da2c94026819add6, type: 3}
   garbageRoot: {fileID: 5928538963992717531}
+--- !u!1 &6632193199197844037
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 868035486217222561}
+  m_Layer: 0
+  m_Name: Assets
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &868035486217222561
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6632193199197844037}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3747665940577378440}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6879696339218775106
 GameObject:
   m_ObjectHideFlags: 0
@@ -595,6 +625,7 @@ Transform:
   - {fileID: 5928538963992717531}
   - {fileID: 7864698050765809594}
   - {fileID: 6548112388733566409}
+  - {fileID: 868035486217222561}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -615,6 +646,7 @@ MonoBehaviour:
   mapCamera: {fileID: 366732555481544690}
   pickHexEffect: {fileID: 990708558059127441}
   pickGroundEffect: {fileID: 5831725165688085202}
+  AssetsRoot: {fileID: 868035486217222561}
 --- !u!1 &9016435637691393934
 GameObject:
   m_ObjectHideFlags: 0
