@@ -55,7 +55,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5785903191917041280}
-        m_MethodName: ForeRefresh
+        m_MethodName: RefreshChunks
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

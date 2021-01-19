@@ -54,5 +54,16 @@ namespace HexMap
         {
             return _layerDict.ContainsKey(lt) ? _layerDict[lt].GetData(id) : -1;
         }
+        
+        public int GetOriginalDataWithId(MapLayerType lt, int id)
+        {
+            return _layerDict.ContainsKey(lt) ? _layerDict[lt].GetOriginalData(id) : -1;
+        }
+
+        public void SetDataWithId(MapLayerType lt, int id, int value)
+        {
+            if (_layerDict.ContainsKey(lt))
+                _layerDict[lt].SetData(id, value);
+        }
     }
 }

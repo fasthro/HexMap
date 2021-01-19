@@ -88,9 +88,14 @@ namespace HexMap.Runtime
             }
         }
 
+        public bool IsNeedLoadAsset(string assetId)
+        {
+            return _terrainAsset == null && _terrainAssetId == assetId;
+        }
+
         public void OnLoadAsset(AssetIdentity identity)
         {
-            if (_terrainAssetId == identity.id)
+            if (_terrainAsset == null && _terrainAssetId == identity.id)
             {
                 _terrainAsset = identity;
                 _terrainAsset.transform.SetParent(transform);

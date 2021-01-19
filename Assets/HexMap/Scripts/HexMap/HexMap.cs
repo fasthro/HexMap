@@ -32,9 +32,9 @@ namespace HexMap.Runtime
         
         [Tooltip("资源节点")]
         public Transform AssetsRoot;
-        [FormerlySerializedAs("AssetLoadVelocity")] [Tooltip("资源加载速度（蛋帧加载数量）,默认为 chunkRowSize * chunkColumnSize")]
+        [Tooltip("资源加载速度（蛋帧加载数量）,默认为 chunkRowSize * chunkColumnSize")]
         public int assetLoadVelocity = 0;
-        [FormerlySerializedAs("AssetLoadRestFrame")] [Tooltip("资源加载间歇帧数")]
+        [Tooltip("资源加载间歇帧数")]
         public int assetLoadRestFrame = 5;
         public EditorModel editorModel { get; private set; }
 
@@ -91,7 +91,7 @@ namespace HexMap.Runtime
             }
         }
 
-        public void ForeRefresh()
+        public void RefreshChunks()
         {
             var chunkXZ = hexGrid.PositionToChunkXZ(mapCamera.centerPosition);
             if (chunkXZ.x > 0 && chunkXZ.y > 0)
@@ -100,12 +100,33 @@ namespace HexMap.Runtime
             }
         }
 
+        public void RefreshChunk(int xChunk, int zChunk)
+        {
+            hexGrid.RefreshChunk(hexGrid.XZToChunkIndex(xChunk, zChunk));
+        }
+        
+        public void RefreshChunk(int chunkIndex)
+        {
+            hexGrid.RefreshChunk(chunkIndex);
+        }
+
+        public void RefreshCell(int cellIndex)
+        {
+            var xz = hexGrid.IndexToCellXZ(cellIndex);
+            hexGrid.RefreshCell(cellIndex);
+        }
+        
+        public void RefreshCell(int xCell, int zCell)
+        {
+            hexGrid.RefreshCell(hexGrid.XZToCellIndex(xCell, zCell));
+        }
+
         public void OnPickHexCell(HexCell cell)
         {
             pickHexIndex = cell.index;
             pickHexEffect.gameObject.SetActive(true);
             pickHexEffect.localPosition = cell.position;
-            EditorUI.instance.main.SetSelected(true, cell);
+            EditorUI.instance.main.SetSelected(true, cell.index);
         }
 
         public void OnPickGroundCell(GroundCell cell)

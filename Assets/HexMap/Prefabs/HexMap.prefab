@@ -554,8 +554,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49dfacc81a3385c419b3bd3cbe30e7d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridRowCount: 1500
-  gridColumnCount: 1500
+  cellRowCount: 1500
+  cellColumnCount: 1500
   chunkRowSize: 20
   chunkColumnSize: 20
   hexChunk: {fileID: 2227157256377375143, guid: eb360f52bb3d03c4a8fcb98b00d59038,
@@ -647,6 +647,8 @@ MonoBehaviour:
   pickHexEffect: {fileID: 990708558059127441}
   pickGroundEffect: {fileID: 5831725165688085202}
   AssetsRoot: {fileID: 868035486217222561}
+  assetLoadVelocity: 0
+  assetLoadRestFrame: 5
 --- !u!1 &9016435637691393934
 GameObject:
   m_ObjectHideFlags: 0

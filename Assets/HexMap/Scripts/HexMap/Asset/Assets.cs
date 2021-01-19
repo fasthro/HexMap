@@ -70,11 +70,16 @@ namespace HexMap.Runtime
         {
             if (_maxPassCount <= 0)
                 _maxPassCount = _loaderQueue.Count > VELOCITY ? VELOCITY : _loaderQueue.Count;
-            
+
             while (_passCount <= _maxPassCount && _frameCount == 0 && _loaderQueue.Count > 0)
             {
                 _passCount++;
-                _loaderQueue.Dequeue().OnLoadAsset(_unitQueue.Dequeue().Allocate());
+                var unit = _unitQueue.Dequeue();
+                var loader = _loaderQueue.Dequeue();
+                if (loader.IsNeedLoadAsset(unit.id))
+                {
+                    loader.OnLoadAsset(unit.Allocate());
+                }
             }
 
             if (_passCount > _maxPassCount)

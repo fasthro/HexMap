@@ -66,6 +66,8 @@ namespace HexMap
 
         private bool _isSelectedHexCell;
         private bool _isSelectedAsset;
+        private Asset _selectedAsset;
+        private int _selectedCellIndex;
 
         private void Awake()
         {
@@ -73,7 +75,7 @@ namespace HexMap
             btnGoto.onClick.AddListener(OnGotoButtonClick);
             drapDpwnAssetType.onValueChanged.AddListener(OnValueChanged_DrapDpwnAssetType);
             selectInfoRoot.gameObject.SetActive(false);
-            
+
             btnReplace.onClick.AddListener(OnReplaceButtonClick);
             btnRestore.onClick.AddListener(OnRestoreButtonClick);
             optRoot.gameObject.SetActive(false);
@@ -92,12 +94,12 @@ namespace HexMap
             drapDpwnAssetType.options = MapEditor.instance.assetsSettings.GetDropdownAssetTypes();
             drapDpwnAssetType.SetValueWithoutNotify(0);
             OnValueChanged_DrapDpwnAssetType(0);
-            drapDpwnEditorModel.value = (int)model;
+            drapDpwnEditorModel.value = (int) model;
         }
 
         private void OnValueChanged_EditorModel(int value)
         {
-            Runtime.HexMap.instance.SetEditorModel((EditorModel)value);
+            Runtime.HexMap.instance.SetEditorModel((EditorModel) value);
         }
 
         private void OnValueChanged_DrapDpwnAssetType(int value)
@@ -106,6 +108,7 @@ namespace HexMap
             {
                 selectedToggle.SetIsOnWithoutNotify(false);
             }
+
             preView.SetActive(false);
             ShowAssetList(drapDpwnAssetType.captionText.text);
         }
@@ -141,8 +144,8 @@ namespace HexMap
             var currPos = mapCamera.centerPosition;
             var chunkXZ = hexGrid.PositionToCellXZ(currPos);
             RectTransform rect = pointer.parent.GetComponent<RectTransform>();
-            float posX = chunkXZ.x * rect.rect.width / hexGrid.gridRowCount - rect.rect.width / 2;
-            float posY = chunkXZ.y * rect.rect.height / hexGrid.gridColumnCount - rect.rect.height / 2;
+            float posX = chunkXZ.x * rect.rect.width / hexGrid.cellRowCount - rect.rect.width / 2;
+            float posY = chunkXZ.y * rect.rect.height / hexGrid.cellColumnCount - rect.rect.height / 2;
             pointer.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(posX, -posY, 0);
             textPosition.text = string.Format("X:{0} Y:{1}", chunkXZ.x, chunkXZ.y);
         }
@@ -153,8 +156,8 @@ namespace HexMap
             {
                 if (pos.y < planeRect.rect.height / 2 && pos.y > -planeRect.rect.height / 2)
                 {
-                    int cellX = (int)((pos.x + planeRect.rect.width / 2) / planeRect.rect.width * hexGrid.gridRowCount);
-                    int cellY = (int)(-(pos.y - planeRect.rect.height / 2) / planeRect.rect.height * hexGrid.gridColumnCount);
+                    int cellX = (int) ((pos.x + planeRect.rect.width / 2) / planeRect.rect.width * hexGrid.cellRowCount);
+                    int cellY = (int) (-(pos.y - planeRect.rect.height / 2) / planeRect.rect.height * hexGrid.cellColumnCount);
 
                     Runtime.HexMap.instance.mapCamera.MoveToCell(cellX, cellY);
                 }
@@ -208,32 +211,38 @@ namespace HexMap
                 {
                     Destroy(roadRoot.GetChild(i).gameObject);
                 }
+
                 for (int i = 0; i < terrainRoot.childCount; i++)
                 {
                     Destroy(terrainRoot.GetChild(i).gameObject);
                 }
 
+                _selectedAsset = showAssets[index];
                 if (drapDpwnAssetType.captionText.text == "Road")
                 {
-                    Instantiate(showAssets[index].gameObject, roadRoot);
+                    Instantiate(_selectedAsset.gameObject, roadRoot);
                 }
                 else if (drapDpwnAssetType.captionText.text == "Terrain")
                 {
-                    Instantiate(showAssets[index].gameObject, terrainRoot);
+                    Instantiate(_selectedAsset.gameObject, terrainRoot);
                 }
             }
+            else _selectedAsset = null;
 
             SetOpt();
         }
 
-        public void SetSelected(bool isSelected, HexCell cell)
+        public void SetSelected(bool isSelected, int cellIndex)
         {
             _isSelectedHexCell = isSelected;
             selectInfoRoot.gameObject.SetActive(isSelected);
             if (isSelected)
             {
-                textSelectInfo.text = $"焦点坐标 ({cell.x}, {cell.z}) - 地形（山地）-  等级（5）- 无覆盖物";
+                _selectedCellIndex = cellIndex;
+                var xz = Runtime.HexMap.instance.hexGrid.IndexToCellXZ(cellIndex);
+                textSelectInfo.text = $"焦点坐标 ({xz.x}, {xz.y}) - 地形（山地）-  等级（5）- 无覆盖物";
             }
+            else _selectedCellIndex = -1;
 
             SetOpt();
         }
@@ -246,12 +255,22 @@ namespace HexMap
 
         private void OnReplaceButtonClick()
         {
-            
+            if (_selectedAsset != null && _selectedCellIndex > -1)
+            {
+                MapEditor.instance.mapParser.SetDataWithId(MapLayerType.Prefab,_selectedCellIndex, _selectedAsset.index);
+                Runtime.HexMap.instance.RefreshCell(_selectedCellIndex);
+            }
         }
 
         private void OnRestoreButtonClick()
         {
-            
+            if (_selectedAsset != null && _selectedCellIndex > -1)
+            {
+                var value = MapEditor.instance.mapParser.GetOriginalDataWithId(MapLayerType.Prefab,_selectedCellIndex);
+                MapEditor.instance.mapParser.SetDataWithId(MapLayerType.Prefab,_selectedCellIndex, value);
+                Debug.Log("----------------> " + value);
+                Runtime.HexMap.instance.RefreshCell(_selectedCellIndex);
+            }
         }
     }
 }

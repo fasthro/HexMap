@@ -7,13 +7,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace HexMap.Runtime
 {
     public class HexGrid : MonoBehaviour
     {
-        [SerializeField] public int gridRowCount;
-        [SerializeField] public int gridColumnCount;
+        [SerializeField] public int cellRowCount;
+        [SerializeField] public int cellColumnCount;
 
         [SerializeField] public int chunkRowSize;
         [SerializeField] public int chunkColumnSize;
@@ -45,17 +46,33 @@ namespace HexMap.Runtime
 
             // chunks
             activeChunkX = activeChunkX = -1;
-            chunkRowCount = gridRowCount / chunkRowSize;
-            chunkColumnCount = gridColumnCount / chunkColumnSize;
+            chunkRowCount = cellRowCount / chunkRowSize;
+            chunkColumnCount = cellColumnCount / chunkColumnSize;
             chunks = new HexChunk[chunkRowCount * chunkColumnCount];
 
             // cells
-            cells = new HexCell[gridRowCount * gridColumnCount];
+            cells = new HexCell[cellRowCount * cellColumnCount];
         }
 
         public void SetEditorModel(bool editor)
         {
             gameObject.SetActive(editor);
+        }
+
+        public void RefreshCell(int cellIndex)
+        {
+            if (cells[cellIndex] != null)
+                cells[cellIndex].SetActive(true);
+        }
+
+        public void RefreshChunk(int chunkIndex)
+        {
+            var chunk = chunks[chunkIndex];
+            if (chunk.isActive)
+            {
+                foreach (var cell in chunk.cells)
+                    cell.SetActive(true);
+            }
         }
 
         public void ForeRefresh(int xChunk, int zChunk)
@@ -100,7 +117,7 @@ namespace HexMap.Runtime
                     _chunkActives2.Add(priorityChunkIndex);
                 }
             }
-            
+
             for (var tz = z; tz < mz; tz++)
             {
                 for (var tx = x; tx < mx; tx++)
@@ -146,8 +163,8 @@ namespace HexMap.Runtime
 
             var sx = chunk.x * chunkRowSize;
             var sz = chunk.z * chunkColumnSize;
-            var msx = sx + chunkColumnSize > gridRowCount ? gridRowCount : sx + chunkColumnSize;
-            var msz = sz + chunkColumnSize > gridRowCount ? gridRowCount : sz + chunkColumnSize;
+            var msx = sx + chunkColumnSize > cellRowCount ? cellRowCount : sx + chunkColumnSize;
+            var msz = sz + chunkColumnSize > cellRowCount ? cellRowCount : sz + chunkColumnSize;
             for (int tz = sz; tz < msz; tz++)
             {
                 for (int tx = sx; tx < msx; tx++)
@@ -208,7 +225,7 @@ namespace HexMap.Runtime
 
         private HexCell PoolGetHexCell(int x, int z, int chunkIndex)
         {
-            int index = x + z * gridRowCount;
+            int index = x + z * cellRowCount;
             if (index >= cells.Length)
             {
                 Debug.LogError($"HexCell Index > Cells3.Length x: {x} z:{z} index:{index} chunkIndex:{chunkIndex}");
@@ -235,7 +252,6 @@ namespace HexMap.Runtime
                 }
                 else
                 {
-                    // cell = cells[index] = GameObject.Instantiate<HexCell>(hexCell);
                     cell = cells[index] = _cellStack.Pop();
                 }
             }
@@ -271,13 +287,23 @@ namespace HexMap.Runtime
         public int PositionToCellIndex(Vector3 position)
         {
             var coord = HexCoord.AtPosition(new Vector2(position.x, Mathf.Abs(position.z)));
-            return coord.q + coord.r * gridRowCount + coord.r / 2;
+            return coord.q + coord.r * cellRowCount + coord.r / 2;
         }
 
         public Vector2Int PositionToCellXZ(Vector3 position)
         {
             var index = PositionToCellIndex(position);
-            return new Vector2Int(index % gridRowCount, index / gridColumnCount);
+            return new Vector2Int(index % cellRowCount, index / cellColumnCount);
+        }
+
+        public Vector2Int IndexToCellXZ(int index)
+        {
+            return new Vector2Int(index % cellRowCount, index / cellColumnCount);
+        }
+
+        public int XZToCellIndex(int xCell, int zCell)
+        {
+            return xCell + zCell * cellRowCount;
         }
 
         public Vector2Int PositionToChunkXZ(Vector3 position)
@@ -292,6 +318,16 @@ namespace HexMap.Runtime
         {
             var chunkXZ = PositionToChunkXZ(position);
             return chunkXZ.x + chunkXZ.y * chunkRowCount;
+        }
+
+        public Vector2Int IndexToChunkXZ(int index)
+        {
+            return new Vector2Int(index % chunkRowCount, index / chunkColumnCount);
+        }
+
+        public int XZToChunkIndex(int xChunk, int zChunk)
+        {
+            return xChunk + zChunk * chunkRowCount;
         }
     }
 }
