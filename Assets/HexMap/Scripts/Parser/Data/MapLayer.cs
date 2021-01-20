@@ -64,5 +64,29 @@ namespace HexMap
         {
             return $"MapLayer: {name}";
         }
+
+        public void RefreshData() 
+        {
+            for (int i = 0; i < data.Length; i++)
+            {
+                if (data[i] != -1)
+                {
+                    _original[i] = data[i];
+                    data[i] = -1;
+                }
+            }   
+        }
+
+        public bool IsChanged() 
+        {
+            for (int i = 0; i < data.Length; i++)
+            {
+                if (data[i] != -1)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

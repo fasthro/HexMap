@@ -1,7 +1,7 @@
 ﻿/*
  * @Author: fasthro
  * @Date: 2021-01-12 12:14:37
- * @Description: 
+ * @Description:
  */
 
 using System;
@@ -33,13 +33,14 @@ namespace HexMap
 
         private bool _isLoaded;
         private bool _isParsed;
+        private bool _isSave;
 
         private void Awake()
         {
             instance = this;
         }
 
-        void Start()
+        private void Start()
         {
             #region initialize
 
@@ -48,12 +49,13 @@ namespace HexMap
 
             EditorUI.instance.Initialize(defaultEditorModel);
 
-            #endregion
+            #endregion initialize
 
             #region parse
 
             _isLoaded = false;
             _isParsed = false;
+            _isSave = false;
             EditorUI.instance.loading.Show("正在加载地图配置文件...");
             mapParser = new MapParser(editorSettings.mapXmlPath);
             mapParser.LoadXml();
@@ -62,10 +64,10 @@ namespace HexMap
             prefabParser.LoadXml();
             prefabParser.LoadXml();
 
-            #endregion
+            #endregion parse
         }
 
-        void Update()
+        private void Update()
         {
             if (!_isLoaded && mapParser.isLoaded && prefabParser.isLoaded)
             {
@@ -81,6 +83,12 @@ namespace HexMap
                 _isParsed = true;
                 onCompleted.Invoke();
             }
+            if (!_isSave && mapParser.isSaved)
+            {
+                EditorUI.instance.loading.Hide();
+                _isSave = true;
+                Debug.Log("地图数据保存成功");
+            }
         }
 
         public string GetPrefabAssetPath(int mapId)
@@ -89,6 +97,13 @@ namespace HexMap
             if (data == -1) return null;
             var mapPrefab = MapEditor.instance.prefabParser.GetWithId(data);
             return mapPrefab == null ? null : mapPrefab.assetPath;
+        }
+
+        public void SaveMapDataToXml()
+        {
+            EditorUI.instance.loading.Show("正在保存地图数据配置文件...");
+            _isSave = false;
+            mapParser.SaveMapDataToXml();
         }
     }
 }

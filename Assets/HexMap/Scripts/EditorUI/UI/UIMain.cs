@@ -21,6 +21,7 @@ namespace HexMap
         public InputField inputX;
         public InputField inputY;
         public Button btnGoto;
+        public Button btnSave;
 
         #endregion top
 
@@ -51,7 +52,7 @@ namespace HexMap
         public Transform selectInfoRoot;
         public Text textSelectInfo;
 
-        #endregion
+        #endregion info
 
         #region opt
 
@@ -59,7 +60,7 @@ namespace HexMap
         public Button btnReplace;
         public Button btnRestore;
 
-        #endregion
+        #endregion opt
 
         private MapCamera mapCamera;
         private HexGrid hexGrid;
@@ -73,6 +74,7 @@ namespace HexMap
         {
             drapDpwnEditorModel.onValueChanged.AddListener(OnValueChanged_EditorModel);
             btnGoto.onClick.AddListener(OnGotoButtonClick);
+            btnSave.onClick.AddListener(OnSaveButtonClick);
             drapDpwnAssetType.onValueChanged.AddListener(OnValueChanged_DrapDpwnAssetType);
             selectInfoRoot.gameObject.SetActive(false);
 
@@ -94,12 +96,12 @@ namespace HexMap
             drapDpwnAssetType.options = MapEditor.instance.assetsSettings.GetDropdownAssetTypes();
             drapDpwnAssetType.SetValueWithoutNotify(0);
             OnValueChanged_DrapDpwnAssetType(0);
-            drapDpwnEditorModel.value = (int) model;
+            drapDpwnEditorModel.value = (int)model;
         }
 
         private void OnValueChanged_EditorModel(int value)
         {
-            Runtime.HexMap.instance.SetEditorModel((EditorModel) value);
+            Runtime.HexMap.instance.SetEditorModel((EditorModel)value);
         }
 
         private void OnValueChanged_DrapDpwnAssetType(int value)
@@ -108,7 +110,8 @@ namespace HexMap
             {
                 selectedToggle.SetIsOnWithoutNotify(false);
             }
-
+            _isSelectedAsset = false;
+            SetOpt();
             preView.SetActive(false);
             ShowAssetList(drapDpwnAssetType.captionText.text);
         }
@@ -147,7 +150,7 @@ namespace HexMap
             float posX = chunkXZ.x * rect.rect.width / hexGrid.cellRowCount - rect.rect.width / 2;
             float posY = chunkXZ.y * rect.rect.height / hexGrid.cellColumnCount - rect.rect.height / 2;
             pointer.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(posX, -posY, 0);
-            textPosition.text = string.Format("X:{0} Y:{1}", chunkXZ.x, chunkXZ.y);
+            textPosition.text = string.Format("行:{0} 列:{1}", chunkXZ.x, chunkXZ.y);
         }
 
         private void UIPositionToCellXZAndGoto(Vector2 pos)
@@ -156,8 +159,8 @@ namespace HexMap
             {
                 if (pos.y < planeRect.rect.height / 2 && pos.y > -planeRect.rect.height / 2)
                 {
-                    int cellX = (int) ((pos.x + planeRect.rect.width / 2) / planeRect.rect.width * hexGrid.cellRowCount);
-                    int cellY = (int) (-(pos.y - planeRect.rect.height / 2) / planeRect.rect.height * hexGrid.cellColumnCount);
+                    int cellX = (int)((pos.x + planeRect.rect.width / 2) / planeRect.rect.width * hexGrid.cellRowCount);
+                    int cellY = (int)(-(pos.y - planeRect.rect.height / 2) / planeRect.rect.height * hexGrid.cellColumnCount);
 
                     Runtime.HexMap.instance.mapCamera.MoveToCell(cellX, cellY);
                 }
@@ -257,7 +260,7 @@ namespace HexMap
         {
             if (_selectedAsset != null && _selectedCellIndex > -1)
             {
-                MapEditor.instance.mapParser.SetDataWithId(MapLayerType.Prefab,_selectedCellIndex, _selectedAsset.index);
+                MapEditor.instance.mapParser.SetDataWithId(MapLayerType.Prefab, _selectedCellIndex, _selectedAsset.index);
                 Runtime.HexMap.instance.RefreshCell(_selectedCellIndex);
             }
         }
@@ -266,11 +269,16 @@ namespace HexMap
         {
             if (_selectedAsset != null && _selectedCellIndex > -1)
             {
-                var value = MapEditor.instance.mapParser.GetOriginalDataWithId(MapLayerType.Prefab,_selectedCellIndex);
-                MapEditor.instance.mapParser.SetDataWithId(MapLayerType.Prefab,_selectedCellIndex, value);
+                var value = MapEditor.instance.mapParser.GetOriginalDataWithId(MapLayerType.Prefab, _selectedCellIndex);
+                MapEditor.instance.mapParser.SetDataWithId(MapLayerType.Prefab, _selectedCellIndex, value);
                 Debug.Log("----------------> " + value);
                 Runtime.HexMap.instance.RefreshCell(_selectedCellIndex);
             }
+        }
+
+        private void OnSaveButtonClick()
+        {
+            MapEditor.instance.SaveMapDataToXml();
         }
     }
 }
