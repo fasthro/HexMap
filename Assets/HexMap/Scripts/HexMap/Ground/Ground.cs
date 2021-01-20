@@ -1,9 +1,11 @@
 /*
  * @Author: fasthro
  * @Date: 2021-01-07 11:52:13
- * @Description: 
+ * @Description:
  */
+
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -36,7 +38,7 @@ namespace HexMap.Runtime
 
         private bool _isEditor;
 
-        void Awake()
+        private void Awake()
         {
             mesh = new Mesh();
             meshFilter = gameObject.AddComponent<MeshFilter>();
@@ -197,6 +199,38 @@ namespace HexMap.Runtime
             for (int ti = 0, i = start; i < end; i++, ti++)
                 triangle[ti] = _triangles[i];
             return triangle;
+        }
+
+        public void SetTileData(int index, int m_index)
+        {
+            _tiles[index] = m_index;
+        }
+
+        public void AfreshDrawMesh()
+        {
+            _subMeshTriangleDict.Clear();
+            for (int i = 0; i < count; i++)
+            {
+                var key = _tiles[i];
+                if (!_subMeshTriangleDict.ContainsKey(key))
+                {
+                    _subMeshTriangleDict.Add(key, new List<int>());
+                }
+            }
+            DrawMesh();
+            SaveData();
+        }
+
+        public void SaveData()
+        {
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            for (int i = 0; i < _tiles.Length; i++)
+            {
+                sb.Append(_tiles[i]);
+                sb.Append(",");
+            }
+            string dataStr = sb.ToString();
+            UFramework.IOPath.FileCreateText(Application.dataPath + "/HexMap/Data/tile.txt", dataStr);
         }
     }
 }
