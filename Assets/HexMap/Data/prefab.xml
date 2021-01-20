@@ -2,9 +2,9 @@
 <Map>
   <Prefabs>
     <Prefab index="0" name="Assets/Art/Map/Terrain/Prefab/terrain_01_lv01_a" terrain="0" radius="0"/>
-    <Prefab index="1" name="Assets/Art/Map/Terrain/Prefab/terrain_02_lv01_a" terrain="0" radius="0" />
-    <Prefab index="2" name="Assets/Art/Map/Terrain/Prefab/terrain_03_lv01_a" terrain="0" radius="1" />
-    <Prefab index="3" name="Assets/Art/Map/Terrain/Prefab/terrain_04_lv01_a" terrain="3" radius="1" />
+    <Prefab index="1" name="Assets/Art/Map/Terrain/Prefab/terrain_02_lv01_a" terrain="1" radius="1" />
+    <Prefab index="2" name="Assets/Art/Map/Terrain/Prefab/terrain_03_lv01_a" terrain="2" radius="2" />
+    <Prefab index="3" name="Assets/Art/Map/Terrain/Prefab/terrain_04_lv01_a" terrain="3" radius="3" />
   </Prefabs>
 </Map>
 

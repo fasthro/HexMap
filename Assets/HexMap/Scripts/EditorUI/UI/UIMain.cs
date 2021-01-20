@@ -96,12 +96,12 @@ namespace HexMap
             drapDpwnAssetType.options = MapEditor.instance.assetsSettings.GetDropdownAssetTypes();
             drapDpwnAssetType.SetValueWithoutNotify(0);
             OnValueChanged_DrapDpwnAssetType(0);
-            drapDpwnEditorModel.value = (int)model;
+            drapDpwnEditorModel.value = (int) model;
         }
 
         private void OnValueChanged_EditorModel(int value)
         {
-            Runtime.HexMap.instance.SetEditorModel((EditorModel)value);
+            Runtime.HexMap.instance.SetEditorModel((EditorModel) value);
         }
 
         private void OnValueChanged_DrapDpwnAssetType(int value)
@@ -110,6 +110,7 @@ namespace HexMap
             {
                 selectedToggle.SetIsOnWithoutNotify(false);
             }
+
             _isSelectedAsset = false;
             SetOpt();
             preView.SetActive(false);
@@ -159,8 +160,8 @@ namespace HexMap
             {
                 if (pos.y < planeRect.rect.height / 2 && pos.y > -planeRect.rect.height / 2)
                 {
-                    int cellX = (int)((pos.x + planeRect.rect.width / 2) / planeRect.rect.width * hexGrid.cellRowCount);
-                    int cellY = (int)(-(pos.y - planeRect.rect.height / 2) / planeRect.rect.height * hexGrid.cellColumnCount);
+                    int cellX = (int) ((pos.x + planeRect.rect.width / 2) / planeRect.rect.width * hexGrid.cellRowCount);
+                    int cellY = (int) (-(pos.y - planeRect.rect.height / 2) / planeRect.rect.height * hexGrid.cellColumnCount);
 
                     Runtime.HexMap.instance.mapCamera.MoveToCell(cellX, cellY);
                 }
@@ -243,7 +244,8 @@ namespace HexMap
             {
                 _selectedCellIndex = cellIndex;
                 var xz = Runtime.HexMap.instance.hexGrid.IndexToCellXZ(cellIndex);
-                textSelectInfo.text = $"焦点坐标 ({xz.x}, {xz.y}) - 地形（山地）-  等级（5）- 无覆盖物";
+                var terrain = MapEditor.instance.mapParser.GetDataWithId(MapLayerType.Terrain, _selectedCellIndex);
+                textSelectInfo.text = $"{xz.x}行 {xz.y}列 地形{terrain}";
             }
             else _selectedCellIndex = -1;
 
@@ -261,6 +263,20 @@ namespace HexMap
             if (_selectedAsset != null && _selectedCellIndex > -1)
             {
                 MapEditor.instance.mapParser.SetDataWithId(MapLayerType.Prefab, _selectedCellIndex, _selectedAsset.index);
+                var hexCell = Runtime.HexMap.instance.GetHexCell(_selectedCellIndex);
+
+                if (_selectedAsset.radius > 0)
+                {
+                    var rings = hexCell.coordinates.NeighborRings(_selectedAsset.radius);
+                    foreach (var coord in rings)
+                    {
+                        var cellIndex = Runtime.HexMap.instance.hexGrid.CoordToCellIndex(coord);
+                        MapEditor.instance.mapParser.SetDataWithId(MapLayerType.Terrain, cellIndex, _selectedAsset.terrain);
+                    }
+                }
+
+                MapEditor.instance.mapParser.SetDataWithId(MapLayerType.Terrain, _selectedCellIndex, _selectedAsset.terrain);
+
                 Runtime.HexMap.instance.RefreshCell(_selectedCellIndex);
             }
         }
@@ -271,7 +287,6 @@ namespace HexMap
             {
                 var value = MapEditor.instance.mapParser.GetOriginalDataWithId(MapLayerType.Prefab, _selectedCellIndex);
                 MapEditor.instance.mapParser.SetDataWithId(MapLayerType.Prefab, _selectedCellIndex, value);
-                Debug.Log("----------------> " + value);
                 Runtime.HexMap.instance.RefreshCell(_selectedCellIndex);
             }
         }

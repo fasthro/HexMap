@@ -691,7 +691,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u4FDD\u5B58\u5730\u56FE\u6570\u636E\u5230XML"
+  m_Text: "\u4FDD\u5B58"
 --- !u!1 &1772857423473480704
 GameObject:
   m_ObjectHideFlags: 0
@@ -1395,11 +1395,11 @@ RectTransform:
   m_Father: {fileID: 7726242755162659755}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -224.1, y: 0}
-  m_SizeDelta: {x: 150, y: 34}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 105, y: 0}
+  m_SizeDelta: {x: 100, y: 34}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &3476416741882335172
 CanvasRenderer:
   m_ObjectHideFlags: 0

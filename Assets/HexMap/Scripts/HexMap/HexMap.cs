@@ -121,6 +121,11 @@ namespace HexMap.Runtime
             hexGrid.RefreshCell(hexGrid.XZToCellIndex(xCell, zCell));
         }
 
+        public HexCell GetHexCell(int cellIndex)
+        {
+            return hexGrid.cells[cellIndex] != null ? hexGrid.cells[cellIndex] : null;
+        }
+
         public void OnPickHexCell(HexCell cell)
         {
             pickHexIndex = cell.index;

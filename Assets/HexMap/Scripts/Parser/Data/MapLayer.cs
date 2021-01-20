@@ -65,7 +65,7 @@ namespace HexMap
             return $"MapLayer: {name}";
         }
 
-        public void RefreshData() 
+        public void SaveData()
         {
             for (int i = 0; i < data.Length; i++)
             {

@@ -25,6 +25,9 @@ namespace HexMap
         public bool isParsed { get; private set; }
         public bool isParsinging { get; private set; }
 
+        public bool isSaved { get; private set; }
+        public bool isSave { get; private set; }
+
         public XmlParser(string xmlPath)
         {
             _xmlPath = xmlPath;
@@ -82,6 +85,29 @@ namespace HexMap
         {
             isParsed = true;
             isParsinging = false;
+        }
+
+        public void Save()
+        {
+            if (!CheckSave() || isSave) return;
+            isSaved = false;
+            isSave = true;
+            ThreadUtils.Run(OnSave, OnSaved);
+        }
+
+        protected virtual void OnSave()
+        {
+        }
+
+        public virtual bool CheckSave()
+        {
+            return true;
+        }
+
+        private void OnSaved()
+        {
+            isSaved = true;
+            isSave = false;
         }
     }
 }

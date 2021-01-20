@@ -83,6 +83,7 @@ namespace HexMap
                 _isParsed = true;
                 onCompleted.Invoke();
             }
+
             if (!_isSave && mapParser.isSaved)
             {
                 EditorUI.instance.loading.Hide();
@@ -101,9 +102,10 @@ namespace HexMap
 
         public void SaveMapDataToXml()
         {
+            if (!mapParser.CheckSave()) return;
             EditorUI.instance.loading.Show("正在保存地图数据配置文件...");
             _isSave = false;
-            mapParser.SaveMapDataToXml();
+            mapParser.Save();
         }
     }
 }

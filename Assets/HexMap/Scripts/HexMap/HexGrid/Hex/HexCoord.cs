@@ -15,17 +15,15 @@ namespace HexMap.Runtime
     [Serializable]
     public struct HexCoord
     {
-
         /// <summary>
         /// Position on the q axis.
         /// </summary>
-        [SerializeField]
-        public int q;
+        [SerializeField] public int q;
+
         /// <summary>
         /// Position on the r axis.
         /// </summary>
-        [SerializeField]
-        public int r;
+        [SerializeField] public int r;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Settworks.Hexagons.HexCoord"/> struct.
@@ -106,7 +104,7 @@ namespace HexMap.Runtime
         public float PolarAngle()
         {
             Vector3 pos = Position();
-            return (float)Math.Atan2(pos.y, pos.x);
+            return (float) Math.Atan2(pos.y, pos.x);
         }
 
         /// <summary>
@@ -143,9 +141,11 @@ namespace HexMap.Runtime
                     if (q < -r) return this + neighbors[CCW ? 0 : 3];
                     return this + neighbors[CCW ? 1 : 3];
                 }
+
                 if (r > 0) return this + neighbors[CCW ? 2 : 5];
                 return this + neighbors[CCW ? 2 : 4];
             }
+
             if (q < 0)
             {
                 if (r > 0)
@@ -154,9 +154,11 @@ namespace HexMap.Runtime
                     if (r < -q) return this + neighbors[CCW ? 4 : 1];
                     return this + neighbors[CCW ? 4 : 0];
                 }
+
                 if (r < 0) return this + neighbors[CCW ? 5 : 2];
                 return this + neighbors[CCW ? 5 : 1];
             }
+
             if (r > 0) return this + neighbors[CCW ? 3 : 5];
             if (r < 0) return this + neighbors[CCW ? 0 : 2];
             return this;
@@ -173,6 +175,74 @@ namespace HexMap.Runtime
         {
             foreach (HexCoord hex in NeighborVectors(first))
                 yield return hex + this;
+        }
+
+        /// <summary>
+        /// Neighbor Ring
+        /// </summary>
+        /// <param name="center"></param>
+        /// <param name="radius"></param>
+        public HexCoord[] NeighborRing(int radius)
+        {
+            var ring = new HexCoord[radius * 6];
+            var _q = 0;
+            var _r = 0;
+            var index = 0;
+            for (var k = 0; k < 6; k++)
+            {
+                for (var i = 0; i < radius; i++)
+                {
+                    if (k == 0)
+                    {
+                        _q = radius - (i + 1);
+                        _r = i + 1;
+                    }
+                    else if (k == 1)
+                    {
+                        _q = -(i + 1);
+                        _r = radius;
+                    }
+                    else if (k == 2)
+                    {
+                        _q = -radius;
+                        _r = radius - i - 1;
+                    }
+                    else if (k == 3)
+                    {
+                        _q = -radius + i + 1;
+                        _r = -(i + 1);
+                    }
+                    else if (k == 4)
+                    {
+                        _q = i + 1;
+                        _r = -radius;
+                    }
+                    else if (k == 5)
+                    {
+                        _q = radius;
+                        _r = -radius + i + 1;
+                    }
+
+                    ring[index] = new HexCoord(_q + q, _r + r);
+                    index++;
+                }
+            }
+
+            return ring;
+        }
+
+        /// <summary>
+        /// Neighbor Rings
+        /// </summary>
+        /// <param name="center"></param>
+        /// <param name="radius"></param>
+        /// <returns></returns>
+        public List<HexCoord> NeighborRings(int radius)
+        {
+            var list = new List<HexCoord>();
+            for (var i = 1; i <= radius; i++)
+                list.AddRange(NeighborRing(i));
+            return list;
         }
 
         /// <summary>
@@ -211,7 +281,7 @@ namespace HexMap.Runtime
         public float CornerPolarAngle(int index)
         {
             Vector2 pos = Corner(index);
-            return (float)Math.Atan2(pos.y, pos.x);
+            return (float) Math.Atan2(pos.y, pos.x);
         }
 
         /// <summary>
@@ -249,26 +319,21 @@ namespace HexMap.Runtime
         public int PolarBoundingCornerIndex(bool CCW = false)
         {
             if (q == 0 && r == 0) return 0;
-            if (q > 0 && r >= 0) return CCW ?
-                (q > r) ? 1 : 2 :
-                (q < r) ? 5 : 4;
-            if (q <= 0 && r > 0) return (-q < r) ?
-                CCW ?
-                    (r > -2 * q) ? 2 : 3 :
+            if (q > 0 && r >= 0)
+                return CCW ? (q > r) ? 1 : 2 :
+                    (q < r) ? 5 : 4;
+            if (q <= 0 && r > 0)
+                return (-q < r) ? CCW ? (r > -2 * q) ? 2 : 3 :
                     (r < -2 * q) ? 0 : 5 :
-                CCW ?
-                    (q > -2 * r) ? 3 : 4 :
+                    CCW ? (q > -2 * r) ? 3 : 4 :
                     (q < -2 * r) ? 1 : 0;
-            if (q < 0) return CCW ?
-                (q < r) ? 4 : 5 :
-                (q > r) ? 2 : 1;
-            return (-r > q) ?
-                CCW ?
-                    (r < -2 * q) ? 5 : 0 :
-                    (r > -2 * q) ? 3 : 2 :
-                CCW ?
-                    (q < -2 * r) ? 0 : 1 :
-                    (q > -2 * r) ? 4 : 3;
+            if (q < 0)
+                return CCW ? (q < r) ? 4 : 5 :
+                    (q > r) ? 2 : 1;
+            return (-r > q) ? CCW ? (r < -2 * q) ? 5 : 0 :
+                (r > -2 * q) ? 3 : 2 :
+                CCW ? (q < -2 * r) ? 0 : 1 :
+                (q > -2 * r) ? 4 : 3;
         }
 
         /// <summary>
@@ -282,13 +347,11 @@ namespace HexMap.Runtime
             if (q > 0 && r >= 0 || q == 0 && r == 0)
                 return (q > r) ? 0 : 1;
             if (q <= 0 && r > 0)
-                return (-q < r) ?
-                    (r > -2 * q) ? 2 : 3 :
+                return (-q < r) ? (r > -2 * q) ? 2 : 3 :
                     (q > -2 * r) ? 4 : 5;
             if (q < 0)
                 return (q < r) ? 6 : 7;
-            return (-r > q) ?
-                (r < -2 * q) ? 8 : 9 :
+            return (-r > q) ? (r < -2 * q) ? 8 : 9 :
                 (q < -2 * r) ? 10 : 11;
         }
 
@@ -310,12 +373,11 @@ namespace HexMap.Runtime
         {
             if (q == 0 && r == 0) return 0;
             if (q > 0 && r >= 0) return (q <= r) ? 1 : 0;
-            if (q <= 0 && r > 0) return (-q <= r) ?
-                (r <= -2 * q) ? 2 : 1 :
-                (q <= -2 * r) ? 3 : 2;
+            if (q <= 0 && r > 0)
+                return (-q <= r) ? (r <= -2 * q) ? 2 : 1 :
+                    (q <= -2 * r) ? 3 : 2;
             if (q < 0) return (q >= r) ? 4 : 3;
-            return (-r > q) ?
-                (r >= -2 * q) ? 5 : 4 :
+            return (-r > q) ? (r >= -2 * q) ? 5 : 4 :
                 (q >= -2 * r) ? 0 : 5;
         }
 
@@ -361,10 +423,11 @@ namespace HexMap.Runtime
         /// <returns>This <see cref="Settworks.Hexagons.HexCoord"/> after scaling.</returns>
         public HexCoord Scale(float factor)
         {
-            q = (int)(q * factor);
-            r = (int)(r * factor);
+            q = (int) (q * factor);
+            r = (int) (r * factor);
             return this;
         }
+
         /// <summary>
         /// Scale as a vector.
         /// </summary>
@@ -375,12 +438,15 @@ namespace HexMap.Runtime
             r *= factor;
             return this;
         }
+
         /// <summary>
         /// Scale as a vector.
         /// </summary>
         /// <returns><see cref="UnityEngine.Vector2"/> representing the scaled vector.</returns>
         public Vector2 ScaleToVector(float factor)
-        { return new Vector2(q * factor, r * factor); }
+        {
+            return new Vector2(q * factor, r * factor);
+        }
 
         /// <summary>
         /// Determines whether this hex is within a specified rectangle.
@@ -390,9 +456,9 @@ namespace HexMap.Runtime
         {
             if (r > cornerA.r && r > cornerB.r || r < cornerA.r && r < cornerB.r)
                 return false;
-            bool reverse = cornerA.O > cornerB.O;   // Travel right to left.
-            bool offset = cornerA.r % 2 != 0;   // Starts on an odd row, bump alternate rows left.
-            bool trim = Math.Abs(cornerA.r - cornerB.r) % 2 == 0;   // Even height, trim alternate rows.
+            bool reverse = cornerA.O > cornerB.O; // Travel right to left.
+            bool offset = cornerA.r % 2 != 0; // Starts on an odd row, bump alternate rows left.
+            bool trim = Math.Abs(cornerA.r - cornerB.r) % 2 == 0; // Even height, trim alternate rows.
             bool odd = (r - cornerA.r) % 2 != 0; // This is an alternate row.
             int width = Math.Abs(cornerA.O - cornerB.O);
             bool hasWidth = width != 0;
@@ -418,6 +484,7 @@ namespace HexMap.Runtime
                 if (bias != (Vector3.Cross(AB, Corner(i) - a).z > 0))
                     return true;
             }
+
             return false;
         }
 
@@ -441,6 +508,7 @@ namespace HexMap.Runtime
                 within = newWithin;
                 sign = newSign;
             }
+
             return false;
         }
 
@@ -499,7 +567,9 @@ namespace HexMap.Runtime
         /// </remarks>
         /// <param name="index">Index of the desired neighbor vector. Cyclically constrained 0..5.</param>
         public static HexCoord NeighborVector(int index)
-        { return neighbors[NormalizeRotationIndex(index, 6)]; }
+        {
+            return neighbors[NormalizeRotationIndex(index, 6)];
+        }
 
         /// <summary>
         /// Enumerate the six neighbor vectors.
@@ -521,13 +591,17 @@ namespace HexMap.Runtime
         /// Neighbor index of 0,0 through which a polar angle passes.
         /// </summary>
         public static int AngleToNeighborIndex(float angle)
-        { return Mathf.RoundToInt(angle / SEXTANT); }
+        {
+            return Mathf.RoundToInt(angle / SEXTANT);
+        }
 
         /// <summary>
         /// Polar angle for a neighbor of 0,0.
         /// </summary>
         public static float NeighborIndexToAngle(int index)
-        { return index * SEXTANT; }
+        {
+            return index * SEXTANT;
+        }
 
         /// <summary>
         /// Unity position vector from hex center to a corner.
@@ -569,32 +643,42 @@ namespace HexMap.Runtime
         /// Corner of 0,0 closest to a polar angle.
         /// </summary>
         public static int AngleToCornerIndex(float angle)
-        { return Mathf.FloorToInt(angle / SEXTANT); }
+        {
+            return Mathf.FloorToInt(angle / SEXTANT);
+        }
 
         /// <summary>
         /// Polar angle for a corner of 0,0.
         /// </summary>
         public static float CornerIndexToAngle(int index)
-        { return (index + 0.5f) * SEXTANT; }
+        {
+            return (index + 0.5f) * SEXTANT;
+        }
 
         /// <summary>
         /// Half sextant of 0,0 through which a polar angle passes.
         /// </summary>
         public static int AngleToHalfSextant(float angle)
-        { return Mathf.RoundToInt(2 * angle / SEXTANT); }
+        {
+            return Mathf.RoundToInt(2 * angle / SEXTANT);
+        }
 
         /// <summary>
         /// Polar angle at which a half sextant begins.
         /// </summary>
         public static float HalfSextantToAngle(int index)
-        { return index * SEXTANT / 2; }
+        {
+            return index * SEXTANT / 2;
+        }
 
 
         /// <summary>
         /// <see cref="Settworks.Hexagons.HexCoord"/> containing a Unity position.
         /// </summary>
         public static HexCoord AtPosition(Vector2 position)
-        { return FromQRVector(VectorXYtoQR(position)); }
+        {
+            return FromQRVector(VectorXYtoQR(position));
+        }
 
         /// <summary>
         /// <see cref="Settworks.Hexagons.HexCoord"/> from hexagonal polar coordinates.
@@ -629,7 +713,7 @@ namespace HexMap.Runtime
         /// <param name="angle">Desired polar angle.</param>
         public static int FindPolarIndex(int radius, float angle)
         {
-            return (int)Math.Round(angle * radius * 3 / Mathf.PI);
+            return (int) Math.Round(angle * radius * 3 / Mathf.PI);
         }
 
         /// <summary>
@@ -655,9 +739,9 @@ namespace HexMap.Runtime
         public static HexCoord FromQRVector(Vector2 QRvector)
         {
             float z = -QRvector.x - QRvector.y;
-            int ix = (int)Math.Round(QRvector.x);
-            int iy = (int)Math.Round(QRvector.y);
-            int iz = (int)Math.Round(z);
+            int ix = (int) Math.Round(QRvector.x);
+            int iy = (int) Math.Round(QRvector.y);
+            int iz = (int) Math.Round(z);
             if (ix + iy + iz != 0)
             {
                 float dx = Math.Abs(ix - QRvector.x);
@@ -668,6 +752,7 @@ namespace HexMap.Runtime
                 else if (dy >= dz)
                     iy = -ix - iz;
             }
+
             return new HexCoord(ix, iy);
         }
 
@@ -694,7 +779,8 @@ namespace HexMap.Runtime
         {
             Vector2 min = new Vector2(Math.Min(cornerA.x, cornerB.x), Math.Min(cornerA.y, cornerB.y));
             Vector2 max = new Vector2(Math.Max(cornerA.x, cornerB.x), Math.Max(cornerA.y, cornerB.y));
-            HexCoord[] results = {
+            HexCoord[] results =
+            {
                 HexCoord.AtPosition(min),
                 HexCoord.AtPosition(max)
             };
@@ -717,22 +803,40 @@ namespace HexMap.Runtime
 
         // Cast to Vector2 in QR space. Explicit to avoid QR/XY mix-ups.
         public static explicit operator Vector2(HexCoord h)
-        { return new Vector2(h.q, h.r); }
+        {
+            return new Vector2(h.q, h.r);
+        }
+
         // +, -, ==, !=
         public static HexCoord operator +(HexCoord a, HexCoord b)
-        { return new HexCoord(a.q + b.q, a.r + b.r); }
+        {
+            return new HexCoord(a.q + b.q, a.r + b.r);
+        }
+
         public static HexCoord operator -(HexCoord a, HexCoord b)
-        { return new HexCoord(a.q - b.q, a.r - b.r); }
+        {
+            return new HexCoord(a.q - b.q, a.r - b.r);
+        }
+
         public static bool operator ==(HexCoord a, HexCoord b)
-        { return a.q == b.q && a.r == b.r; }
+        {
+            return a.q == b.q && a.r == b.r;
+        }
+
         public static bool operator !=(HexCoord a, HexCoord b)
-        { return a.q != b.q || a.r != b.r; }
+        {
+            return a.q != b.q || a.r != b.r;
+        }
+
         // Mandatory overrides: Equals(), GetHashCode()
         public override bool Equals(object o)
-        { return (o is HexCoord) && this == (HexCoord)o; }
+        {
+            return (o is HexCoord) && this == (HexCoord) o;
+        }
+
         public override int GetHashCode()
         {
-            return q & (int)0xFFFF | r << 16;
+            return q & (int) 0xFFFF | r << 16;
         }
 
         /*
@@ -750,7 +854,8 @@ namespace HexMap.Runtime
         public static readonly float SQRT3 = Mathf.Sqrt(3);
 
         // The directions array. These are private to prevent overwriting elements.
-        static readonly HexCoord[] neighbors = {
+        static readonly HexCoord[] neighbors =
+        {
             new HexCoord(1, 0),
             new HexCoord(0, 1),
             new HexCoord(-1, 1),
@@ -760,7 +865,8 @@ namespace HexMap.Runtime
         };
 
         // Corner locations in XY space. Private for same reason as neighbors.
-        static readonly Vector2[] corners = {
+        static readonly Vector2[] corners =
+        {
             new Vector2(Mathf.Sin(SEXTANT), Mathf.Cos(SEXTANT)),
             new Vector2(0, 1),
             new Vector2(Mathf.Sin(-SEXTANT), Mathf.Cos(-SEXTANT)),
@@ -775,6 +881,5 @@ namespace HexMap.Runtime
         static readonly Vector2 R_XY = new Vector2(SQRT3 / 2, 1.5f);
         static readonly Vector2 X_QR = new Vector2(SQRT3 / 3, 0);
         static readonly Vector2 Y_QR = new Vector2(-1 / 3f, 2 / 3f);
-
     }
 }

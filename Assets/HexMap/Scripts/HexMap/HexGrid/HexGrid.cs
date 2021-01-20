@@ -173,7 +173,7 @@ namespace HexMap.Runtime
                 }
             }
 
-            Debug.Log($"Active Chunk: {chunkIndex}");
+            // Debug.Log($"Active Chunk: {chunkIndex}");
         }
 
         private HexChunk PoolGetHexChunk(int x, int z, int index)
@@ -210,7 +210,7 @@ namespace HexMap.Runtime
 
         private void PoolRecycleHexChunk(HexChunk chunk)
         {
-            Debug.Log($"Recycle Chunk: {chunk.index}");
+            // Debug.Log($"Recycle Chunk: {chunk.index}");
             chunks[chunk.index] = null;
 
             chunk.isActive = false;
@@ -282,6 +282,11 @@ namespace HexMap.Runtime
             cell.SetActive(false);
             cell.transform.SetParent(garbageRoot);
             _cellStack.Push(cell);
+        }
+        
+        public int CoordToCellIndex(HexCoord coord)
+        {
+            return coord.q + coord.r * cellRowCount + coord.r / 2;
         }
 
         public int PositionToCellIndex(Vector3 position)
